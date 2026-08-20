@@ -17,9 +17,9 @@ public class TaskList {
     }
 
     /**
-     * Checks whether a user-facing task number refers to an existing task.
+     * Checks whether a task number refers to an existing task.
      *
-     * @param taskNumber the 1-based number the user typed
+     * @param taskNumber the 1-based task number
      * @return true if a task with that number exists
      */
     private boolean isValidTaskNumber(int taskNumber) {
@@ -27,9 +27,9 @@ public class TaskList {
     }
 
     /**
-     * Returns the task at a user-facing number. Converts to a 0-based index internally.
-     *
-     * @param taskNumber the 1-based number the user typed; must be valid
+     * Returns the task corresponding to the number. 
+     * 
+     * @param taskNumber the 1-based task number; must be valid
      * @return the matching task
      */
     private Task get(int taskNumber) {
@@ -39,7 +39,7 @@ public class TaskList {
     /**
      * Marks the numbered task as done or not done.
      *
-     * @param taskNumber the 1-based number the user typed
+     * @param taskNumber the 1-based task number
      * @param isDone true for "mark", false for "unmark"
      * @return the task that was changed, so the caller can report it
      * @throws IndexOutOfBoundsException if no task has that number
