@@ -22,7 +22,7 @@ public class TaskList {
      * @param taskNumber the 1-based number the user typed
      * @return true if a task with that number exists
      */
-    public boolean isValidTaskNumber(int taskNumber) {
+    private boolean isValidTaskNumber(int taskNumber) {
         return taskNumber >= 1 && taskNumber <= tasks.size();
     }
 
@@ -32,8 +32,25 @@ public class TaskList {
      * @param taskNumber the 1-based number the user typed; must be valid
      * @return the matching task
      */
-    public Task get(int taskNumber) {
+    private Task get(int taskNumber) {
         return tasks.get(taskNumber - 1);
+    }
+
+    /**
+     * Marks the numbered task as done or not done.
+     *
+     * @param taskNumber the 1-based number the user typed
+     * @param isDone true for "mark", false for "unmark"
+     * @return the task that was changed, so the caller can report it
+     * @throws IndexOutOfBoundsException if no task has that number
+     */
+    public Task applyMark(int taskNumber, boolean isDone) {
+        if (!isValidTaskNumber(taskNumber)) {
+            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
+        }
+        Task task = get(taskNumber);
+        task.setDone(isDone);
+        return task;
     }
 
     /** Builds a 1-based numbered list of the tasks, one per line. */

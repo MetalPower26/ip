@@ -27,29 +27,29 @@ public class Emma {
     }
 
     /**
-     * Marks the task the user named as done or not done.
+     * Turns a "mark"/"unmark" command into Emma's response.
      *
      * @param tasks the task list to update
      * @param argument the text the user typed after the command word
      * @param isDone true for "mark", false for "unmark"
      * @return Emma's response
      */
-    private static String applyMark(TaskList tasks, String argument, boolean isDone) {
+    private static String handleMark(TaskList tasks, String argument, boolean isDone) {
         int taskNumber;
         try {
             taskNumber = Integer.parseInt(argument.trim());
         } catch (NumberFormatException e) {
             return "I need a task number, like \"mark 1\".";
         }
-        if (!tasks.isValidTaskNumber(taskNumber)) {
+        try {
+            Task task = tasks.applyMark(taskNumber, isDone);
+            String message = isDone
+                    ? "Nice! I've marked this as done:"
+                    : "Okay, I've marked this as not done yet:";
+            return message + "\n  " + task;
+        } catch (IndexOutOfBoundsException e) {
             return "You don't have a task numbered " + taskNumber + ".";
         }
-        Task task = tasks.get(taskNumber);
-        task.setDone(isDone);
-        String message = isDone
-                ? "Nice! I've marked this as done:"
-                : "Okay, I've marked this as not done yet:";
-        return message + "\n  " + task;
     }
 
     /**
@@ -84,9 +84,9 @@ public class Emma {
                 } else if (input.equals("list")) {
                     printResponse(tasks.format());
                 } else if (input.startsWith("mark ")) {
-                    printResponse(applyMark(tasks, input.substring("mark ".length()), true));
+                    printResponse(handleMark(tasks, input.substring("mark ".length()), true));
                 } else if (input.startsWith("unmark ")) {
-                    printResponse(applyMark(tasks, input.substring("unmark ".length()), false));
+                    printResponse(handleMark(tasks, input.substring("unmark ".length()), false));
                 } else {
                     tasks.add(new Task(input));
                     printResponse("added: " + input);
