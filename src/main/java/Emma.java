@@ -30,14 +30,14 @@ public class Emma {
      * Turns a "mark"/"unmark" command into Emma's response.
      *
      * @param tasks the task list to update
-     * @param argument the text the user typed after the command word
+     * @param arguments the arguments after the command word
      * @param isDone true for "mark", false for "unmark"
      * @return Emma's response
      */
-    private static String handleMark(TaskList tasks, String argument, boolean isDone) {
+    private static String handleMark(TaskList tasks, String arguments, boolean isDone) {
         int taskNumber;
         try {
-            taskNumber = Integer.parseInt(argument.trim());
+            taskNumber = Integer.parseInt(arguments.trim());
         } catch (NumberFormatException e) {
             return "I need a task number, like \"mark 1\".";
         }
@@ -81,11 +81,11 @@ public class Emma {
      * Returns Emma's response to the "todo" command.
      *
      * @param tasks the task list to add to
-     * @param argument the text the user typed after the command word
+     * @param arguments the arguments after the command word
      * @return Emma's response
      */
-    private static String handleTodo(TaskList tasks, String argument) {
-        String description = argument.trim();
+    private static String handleTodo(TaskList tasks, String arguments) {
+        String description = arguments.trim();
         if (description.isEmpty()) {
             return "A todo needs a description, like \"todo read book\".";
         }
@@ -96,13 +96,13 @@ public class Emma {
      * Returns Emma's response to the "deadline" command.
      *
      * @param tasks the task list to add to
-     * @param argument the text the user typed after the command word
+     * @param arguments the arguments after the command word
      * @return Emma's response
      */
-    private static String handleDeadline(TaskList tasks, String argument) {
+    private static String handleDeadline(TaskList tasks, String arguments) {
         String usage = "A deadline needs a description and a time, "
                 + "like \"deadline return book /by Sunday\".";
-        String[] parts = argument.split(" /by ", 2);
+        String[] parts = arguments.split(" /by ", 2);
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
             return usage;
         }
@@ -113,13 +113,13 @@ public class Emma {
      * Returns Emma's response to the "event" command.
      *
      * @param tasks the task list to add to
-     * @param argument the text the user typed after the command word
+     * @param arguments the arguments after the command word
      * @return Emma's response
      */
-    private static String handleEvent(TaskList tasks, String argument) {
+    private static String handleEvent(TaskList tasks, String arguments) {
         String usage = "An event needs a description, a start and an end, "
                 + "like \"event project meeting /from Mon 2pm /to 4pm\".";
-        String[] fromParts = argument.split(" /from ", 2);
+        String[] fromParts = arguments.split(" /from ", 2);
         if (fromParts.length < 2 || fromParts[0].trim().isEmpty()) {
             return usage;
         }
