@@ -1,7 +1,8 @@
 /**
  * A single thing the user wants to keep track of, and whether it is done.
+ * Subclasses decide the type icon and any extra timing details.
  */
-public class Task {
+public abstract class Task {
 
     private final String description;
     private boolean isDone;
@@ -9,7 +10,7 @@ public class Task {
     /**
      * Creates a task that starts out not done.
      *
-     * @param description
+     * @param description what the user typed
      */
     public Task(String description) {
         this.description = description;
@@ -25,10 +26,17 @@ public class Task {
         this.isDone = isDone;
     }
 
-    /** Renders the task as "[x] description" when done, "[ ] description" otherwise. */
+    /**
+     * Returns the type icon shown in the first bracket.
+     *
+     * @return task type icon
+     */
+    protected abstract String getTypeIcon();
+
+    /** Renders the task as "[icon][x] description"; subclasses append their own details. */
     @Override
     public String toString() {
         String statusIcon = isDone ? "x" : " ";
-        return "[" + statusIcon + "] " + description;
+        return "[" + getTypeIcon() + "][" + statusIcon + "] " + description;
     }
 }
