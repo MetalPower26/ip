@@ -2,10 +2,10 @@ import java.util.Scanner;
 
 public class Emma {
 
-    private static final String ESC = String.valueOf((char) 27);
-    private static final String BLUE = ESC + "[34m";
-    private static final String ORANGE = ESC + "[38;5;208m";
-    private static final String RESET = ESC + "[0m";
+    private static final String ANSI_ESC = String.valueOf((char) 27);
+    private static final String COLOR_BLUE = ANSI_ESC + "[34m";
+    private static final String COLOR_ORANGE = ANSI_ESC + "[38;5;208m";
+    private static final String COLOR_RESET = ANSI_ESC + "[0m";
 
     /**
      * Prints "Emma" signifying the sender and Emma's response
@@ -14,7 +14,7 @@ public class Emma {
      */
     private static void printResponse(String response) {
         System.out.println();
-        System.out.println(BLUE + "Emma" + RESET);
+        System.out.println(COLOR_BLUE + "Emma" + COLOR_RESET);
         System.out.println(response);
     }
 
@@ -23,7 +23,7 @@ public class Emma {
      */
     private static void printUserPrompt() {
         System.out.println();
-        System.out.println(ORANGE + "user" + RESET);
+        System.out.println(COLOR_ORANGE + "user" + COLOR_RESET);
     }
 
     /**
