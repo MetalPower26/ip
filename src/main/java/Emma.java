@@ -53,6 +53,19 @@ public class Emma {
     }
 
     /**
+     * Returns Emma's response to the "list" command
+     *
+     * @param tasks the task list to show
+     * @return Emma's response
+     */
+    private static String handleList(TaskList tasks) {
+        if (tasks.isEmpty()) {
+            return "You haven't given me anything to track yet!";
+        }
+        return "Here's your tasks:\n" + tasks.format();
+    }
+
+    /**
      * Runs the chatbot: greets the user, then tracks tasks until "bye".
      *
      * @param args empty
@@ -82,7 +95,7 @@ public class Emma {
                     printResponse(exit);
                     break;
                 } else if (input.equals("list")) {
-                    printResponse(tasks.format());
+                    printResponse(handleList(tasks));
                 } else if (input.startsWith("mark ")) {
                     printResponse(handleMark(tasks, input.substring("mark ".length()), true));
                 } else if (input.startsWith("unmark ")) {

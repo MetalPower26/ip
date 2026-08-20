@@ -53,11 +53,17 @@ public class TaskList {
         return task;
     }
 
-    /** Builds a 1-based numbered list of the tasks, one per line. */
+    /**
+     * Checks whether any tasks are stored.
+     *
+     * @return true if there are no tasks
+     */
+    public boolean isEmpty() {
+        return tasks.isEmpty();
+    }
+
+    /** Builds a 1-based numbered list of the tasks, one per line; empty if there are none. */
     public String format() {
-        if (tasks.isEmpty()) {
-            return "You haven't given me anything to track yet!";
-        }
         StringBuilder list = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
             if (i > 0) {
