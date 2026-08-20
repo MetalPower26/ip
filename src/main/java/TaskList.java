@@ -41,7 +41,7 @@ public class TaskList {
      *
      * @param taskNumber the 1-based task number
      * @param isDone true for "mark", false for "unmark"
-     * @return the task that was changed, so the caller can report it
+     * @return the task that was changed
      * @throws IndexOutOfBoundsException if no task has that number
      */
     public Task applyMark(int taskNumber, boolean isDone) {
@@ -51,6 +51,20 @@ public class TaskList {
         Task task = get(taskNumber);
         task.setDone(isDone);
         return task;
+    }
+
+    /**
+     * Removes the task from the list.
+     *
+     * @param taskNumber the 1-based task number
+     * @return the task that was removed
+     * @throws IndexOutOfBoundsException if no task has that number
+     */
+    public Task delete(int taskNumber) {
+        if (!isValidTaskNumber(taskNumber)) {
+            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
+        }
+        return tasks.remove(taskNumber - 1);
     }
 
     /**

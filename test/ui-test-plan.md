@@ -218,7 +218,46 @@ Bye for now! Hope to see you again soon.
 
 ---
 
-## TC8: Unrecognised command
+## TC8: Deleting a task
+
+**Aim:** `delete` reports the task it removed, the task is gone from the next
+`list`, and the tasks after it are renumbered.
+
+**Input**
+
+```
+todo read book
+todo return book
+todo join club
+delete 2
+list
+delete 5
+delete abc
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [T][ ] read book
+Got it, I've added this:
+  [T][ ] return book
+Got it, I've added this:
+  [T][ ] join club
+Okay, I've removed this:
+  [T][ ] return book
+Here's your tasks:
+1. [T][ ] read book
+2. [T][ ] join club
+You don't have a task numbered 5.
+I need a task number, like "delete 1".
+Bye for now! Hope to see you again soon.
+```
+
+---
+
+## TC9: Unrecognised command
 
 **Aim:** unknown input is reported as unknown rather than silently stored as a
 task, and the session carries on afterwards.

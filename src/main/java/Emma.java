@@ -27,6 +27,22 @@ public class Emma {
     }
 
     /**
+     * Reads the task number that a command like "mark 2" or "delete 2" was given.
+     *
+     * @param arguments the arguments after the command word
+     * @param command the command word, used to word the error message
+     * @return the number the user typed, not yet checked against the list
+     * @throws EmmaException if the argument is not a whole number
+     */
+    private static int parseTaskNumber(String arguments, String command) throws EmmaException {
+        try {
+            return Integer.parseInt(arguments.trim());
+        } catch (NumberFormatException e) {
+            throw new EmmaException("I need a task number, like \"" + command + " 1\".");
+        }
+    }
+
+    /**
      * Turns a "mark"/"unmark" command into Emma's response.
      *
      * @param tasks the task list to update
@@ -37,18 +53,31 @@ public class Emma {
      */
     private static String handleMark(TaskList tasks, String arguments, boolean isDone)
             throws EmmaException {
-        int taskNumber;
-        try {
-            taskNumber = Integer.parseInt(arguments.trim());
-        } catch (NumberFormatException e) {
-            throw new EmmaException("I need a task number, like \"mark 1\".");
-        }
+        int taskNumber = parseTaskNumber(arguments, isDone ? "mark" : "unmark");
         try {
             Task task = tasks.applyMark(taskNumber, isDone);
             String message = isDone
                     ? "Nice! I've marked this as done:"
                     : "Okay, I've marked this as not done yet:";
             return message + "\n  " + task;
+        } catch (IndexOutOfBoundsException e) {
+            throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
+        }
+    }
+
+    /**
+     * Turns a "delete" command into Emma's response.
+     *
+     * @param tasks the task list to remove from
+     * @param arguments the arguments after the command word
+     * @return Emma's response
+     * @throws EmmaException if the argument is not a number, or names no task
+     */
+    private static String handleDelete(TaskList tasks, String arguments) throws EmmaException {
+        int taskNumber = parseTaskNumber(arguments, "delete");
+        try {
+            Task task = tasks.delete(taskNumber);
+            return "Okay, I've removed this:\n  " + task;
         } catch (IndexOutOfBoundsException e) {
             throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
         }
@@ -176,6 +205,8 @@ public class Emma {
                         printResponse(handleMark(tasks, argument, true));
                     } else if (command.equals("unmark")) {
                         printResponse(handleMark(tasks, argument, false));
+                    } else if (command.equals("delete")) {
+                        printResponse(handleDelete(tasks, argument));
                     } else if (command.equals("todo")) {
                         printResponse(handleTodo(tasks, argument));
                     } else if (command.equals("deadline")) {
