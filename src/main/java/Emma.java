@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Emma {
@@ -10,31 +9,13 @@ public class Emma {
 
     /**
      * Prints "Emma" signifying the sender and Emma's response
-     * 
+     *
      * @param response Emma's response
      */
     private static void printResponse(String response) {
         System.out.println();
         System.out.println(BLUE + "Emma" + RESET);
         System.out.println(response);
-    }
-
-    /** Builds a 1-based numbered list of the stored texts, one per line. 
-     * 
-     * @param texts A list of all the text the user has sent
-     */
-    private static String formatTexts(ArrayList<String> texts) {
-        if (texts.isEmpty()) {
-            return "You haven't given anything to track yet!";
-        }
-        StringBuilder list = new StringBuilder();
-        for (int i = 0; i < texts.size(); i++) {
-            if (i > 0) {
-                list.append("\n");
-            }
-            list.append(i + 1).append(". ").append(texts.get(i));
-        }
-        return list.toString();
     }
 
      /**
@@ -46,7 +27,33 @@ public class Emma {
     }
 
     /**
-     * Runs the chatbot: greets the user, then echoes input until "bye".
+     * Marks the task the user named as done or not done.
+     *
+     * @param tasks the task list to update
+     * @param argument the text the user typed after the command word
+     * @param isDone true for "mark", false for "unmark"
+     * @return Emma's response
+     */
+    private static String applyMark(TaskList tasks, String argument, boolean isDone) {
+        int taskNumber;
+        try {
+            taskNumber = Integer.parseInt(argument.trim());
+        } catch (NumberFormatException e) {
+            return "I need a task number, like \"mark 1\".";
+        }
+        if (!tasks.isValidTaskNumber(taskNumber)) {
+            return "You don't have a task numbered " + taskNumber + ".";
+        }
+        Task task = tasks.get(taskNumber);
+        task.setDone(isDone);
+        String message = isDone
+                ? "Nice! I've marked this as done:"
+                : "Okay, I've marked this as not done yet:";
+        return message + "\n  " + task;
+    }
+
+    /**
+     * Runs the chatbot: greets the user, then tracks tasks until "bye".
      *
      * @param args empty
      */
@@ -62,7 +69,7 @@ public class Emma {
         System.out.println(banner);
         printResponse(greeting);
 
-        ArrayList<String> texts = new ArrayList<>();
+        TaskList tasks = new TaskList();
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -75,9 +82,13 @@ public class Emma {
                     printResponse(exit);
                     break;
                 } else if (input.equals("list")) {
-                    printResponse(formatTexts(texts));
+                    printResponse(tasks.format());
+                } else if (input.startsWith("mark ")) {
+                    printResponse(applyMark(tasks, input.substring("mark ".length()), true));
+                } else if (input.startsWith("unmark ")) {
+                    printResponse(applyMark(tasks, input.substring("unmark ".length()), false));
                 } else {
-                    texts.add(input);
+                    tasks.add(new Task(input));
                     printResponse("added: " + input);
                 }
             }
