@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 
 public class Emma {
@@ -102,8 +103,9 @@ public class Emma {
      * @param tasks the task list to add to
      * @param task the task to store
      * @return Emma's response
+     * @throws EmmaException if the tasks could not be saved
      */
-    private static String addTask(TaskList tasks, Task task) {
+    private static String addTask(TaskList tasks, Task task) throws EmmaException {
         tasks.add(task);
         return "Got it, I've added this:\n  " + task;
     }
@@ -165,21 +167,6 @@ public class Emma {
     }
 
     /**
-     * Reports whether a command can change the task list, and so needs saving.
-     *
-     * @param command the command word the user typed
-     * @return true if the command may modify the list
-     */
-    private static boolean changesTasks(String command) {
-        return command.equals("todo")
-                || command.equals("deadline")
-                || command.equals("event")
-                || command.equals("mark")
-                || command.equals("unmark")
-                || command.equals("delete");
-    }
-
-    /**
      * Runs the chatbot: greets the user, then tracks tasks until "bye".
      *
      * @param args empty
@@ -199,10 +186,10 @@ public class Emma {
         Storage storage = new Storage();
         TaskList tasks;
         try {
-            tasks = storage.load();
+            tasks = new TaskList(storage, storage.load());
         } catch (EmmaException e) {
             printResponse(e.getMessage() + "\nI'll start with an empty list.");
-            tasks = new TaskList();
+            tasks = new TaskList(storage, List.of());
         }
 
         try (Scanner scanner = new Scanner(System.in)) {
@@ -218,6 +205,10 @@ public class Emma {
                 String argument = parts.length > 1 ? parts[1] : "";
 
                 try {
+                    // TODO: We should handle commands in a different class.
+                    //  We can do this by creating a Command class that ties
+                    //  each command with its implementation and a Parser class
+                    //  to parse the command and call the correct implementation.
                     if (command.equals("bye")) {
                         printResponse(exit);
                         break;
@@ -237,9 +228,6 @@ public class Emma {
                         printResponse(handleEvent(tasks, argument));
                     } else {
                         throw new EmmaException("Sorry, I don't know what that means!");
-                    }
-                    if (changesTasks(command)) {
-                        storage.save(tasks);
                     }
                 } catch (EmmaException e) {
                     printResponse(e.getMessage());

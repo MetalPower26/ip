@@ -8,14 +8,28 @@ import java.util.List;
 public class TaskList {
 
     private final ArrayList<Task> tasks = new ArrayList<>();
+    private final Storage storage;
 
     /**
-     * Adds a task to the end of the list.
+     * Creates a list that saves itself whenever it changes.
+     *
+     * @param storage where the tasks are kept between runs
+     * @param initialTasks the tasks already on disk; seeding does not re-save them
+     */
+    public TaskList(Storage storage, List<Task> initialTasks) {
+        this.storage = storage;
+        this.tasks.addAll(initialTasks);
+    }
+
+    /**
+     * Adds a task to the end of the list and saves.
      *
      * @param task the task to store
+     * @throws EmmaException if the tasks could not be saved
      */
-    public void add(Task task) {
+    public void add(Task task) throws EmmaException {
         tasks.add(task);
+        storage.save(this);
     }
 
     /**
@@ -45,13 +59,15 @@ public class TaskList {
      * @param isDone true for "mark", false for "unmark"
      * @return the task that was changed
      * @throws IndexOutOfBoundsException if no task has that number
+     * @throws EmmaException if the tasks could not be saved
      */
-    public Task applyMark(int taskNumber, boolean isDone) {
+    public Task applyMark(int taskNumber, boolean isDone) throws EmmaException {
         if (!isValidTaskNumber(taskNumber)) {
             throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
         }
         Task task = get(taskNumber);
         task.setDone(isDone);
+        storage.save(this);
         return task;
     }
 
@@ -61,12 +77,15 @@ public class TaskList {
      * @param taskNumber the 1-based task number
      * @return the task that was removed
      * @throws IndexOutOfBoundsException if no task has that number
+     * @throws EmmaException if the tasks could not be saved
      */
-    public Task delete(int taskNumber) {
+    public Task delete(int taskNumber) throws EmmaException {
         if (!isValidTaskNumber(taskNumber)) {
             throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
         }
-        return tasks.remove(taskNumber - 1);
+        Task removed = tasks.remove(taskNumber - 1);
+        storage.save(this);
+        return removed;
     }
 
     /**

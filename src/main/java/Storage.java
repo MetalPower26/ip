@@ -33,10 +33,9 @@ public class Storage {
      * @return the tasks that were on disk
      * @throws EmmaException if the file exists but cannot be read or understood
      */
-    public TaskList load() throws EmmaException {
-        TaskList tasks = new TaskList();
+    public List<Task> load() throws EmmaException {
         if (!Files.exists(FILE)) {
-            return tasks;
+            return List.of();
         }
         String text;
         try {
@@ -44,10 +43,7 @@ public class Storage {
         } catch (IOException e) {
             throw new EmmaException("I couldn't read " + FILE + ": " + e.getMessage());
         }
-        for (Task task : new JsonReader(text).readTasks()) {
-            tasks.add(task);
-        }
-        return tasks;
+        return new JsonReader(text).readTasks();
     }
 
     /**
