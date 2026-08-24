@@ -170,7 +170,8 @@ public class Emma {
      * @param tasks the task list to add to
      * @param arguments the arguments after the command word
      * @return Emma's response
-     * @throws EmmaException if the description, the start or the end is missing or is not a real date
+     * @throws EmmaException if the description, the start or the end is missing, is not a
+     *     real date, or the event ends before it starts
      */
     private static String handleEvent(TaskList tasks, String arguments) throws EmmaException {
         String usage = "An event needs a description, a start date and an end date, "
@@ -185,6 +186,10 @@ public class Emma {
         }
         LocalDate from = parseDate(toParts[0].trim(), "a start date");
         LocalDate to = parseDate(toParts[1].trim(), "an end date");
+        if (from.isAfter(to)) {
+            throw new EmmaException("An event has to end on or after it starts, but "
+                    + Dates.format(to) + " is before " + Dates.format(from) + ".");
+        }
         return addTask(tasks, new Event(fromParts[0].trim(), from, to));
     }
 

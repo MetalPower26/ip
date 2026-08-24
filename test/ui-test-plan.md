@@ -360,3 +360,30 @@ I need an end date as a date like 2019-10-15, but I got "next week".
 You haven't given me anything to track yet!
 Bye for now! Hope to see you again soon.
 ```
+
+---
+
+## TC12: Events that end before they start
+
+**Aim:** `event` rejects an end date earlier than its start date and adds
+nothing, but still accepts an event that starts and ends on the same day.
+
+**Input**
+
+```
+event meeting /from 2019-10-16 /to 2019-10-15
+event meeting /from 2019-10-15 /to 2019-10-15
+list
+bye
+```
+
+**Expected output**
+
+```
+An event has to end on or after it starts, but Oct 15 2019 is before Oct 16 2019.
+Got it, I've added this:
+  [E][ ] meeting (from: Oct 15 2019 to: Oct 15 2019)
+Here's your tasks:
+1. [E][ ] meeting (from: Oct 15 2019 to: Oct 15 2019)
+Bye for now! Hope to see you again soon.
+```
