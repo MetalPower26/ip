@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -40,6 +42,23 @@ public class Emma {
             return Integer.parseInt(arguments.trim());
         } catch (NumberFormatException e) {
             throw new EmmaException("I need a task number, like \"" + command + " 1\".");
+        }
+    }
+
+    /**
+     * Reads a date written as yyyy-mm-dd, rejecting anything that is not a real date.
+     *
+     * @param text the date the user typed
+     * @param field the part of the command it came from, used to word the error message
+     * @return the date the user typed
+     * @throws EmmaException if the text is not a real date in yyyy-mm-dd form
+     */
+    private static LocalDate parseDate(String text, String field) throws EmmaException {
+        try {
+            return LocalDate.parse(text);
+        } catch (DateTimeParseException e) {
+            throw new EmmaException("I need " + field + " as a date like 2019-10-15, "
+                    + "but I got \"" + text + "\".");
         }
     }
 
@@ -132,16 +151,17 @@ public class Emma {
      * @param tasks the task list to add to
      * @param arguments the arguments after the command word
      * @return Emma's response
-     * @throws EmmaException if the description or the time is missing
+     * @throws EmmaException if the description or the date is missing, or is not a real date
      */
     private static String handleDeadline(TaskList tasks, String arguments) throws EmmaException {
-        String usage = "A deadline needs a description and a time, "
-                + "like \"deadline return book /by Sunday\".";
+        String usage = "A deadline needs a description and a date, "
+                + "like \"deadline return book /by 2019-10-15\".";
         String[] parts = arguments.split(" /by ", 2);
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
             throw new EmmaException(usage);
         }
-        return addTask(tasks, new Deadline(parts[0].trim(), parts[1].trim()));
+        LocalDate by = parseDate(parts[1].trim(), "a due date");
+        return addTask(tasks, new Deadline(parts[0].trim(), by));
     }
 
     /**
@@ -150,11 +170,11 @@ public class Emma {
      * @param tasks the task list to add to
      * @param arguments the arguments after the command word
      * @return Emma's response
-     * @throws EmmaException if the description, the start or the end is missing
+     * @throws EmmaException if the description, the start or the end is missing or is not a real date
      */
     private static String handleEvent(TaskList tasks, String arguments) throws EmmaException {
-        String usage = "An event needs a description, a start and an end, "
-                + "like \"event project meeting /from Mon 2pm /to 4pm\".";
+        String usage = "An event needs a description, a start date and an end date, "
+                + "like \"event project meeting /from 2019-10-15 /to 2019-10-16\".";
         String[] fromParts = arguments.split(" /from ", 2);
         if (fromParts.length < 2 || fromParts[0].trim().isEmpty()) {
             throw new EmmaException(usage);
@@ -163,7 +183,9 @@ public class Emma {
         if (toParts.length < 2 || toParts[0].trim().isEmpty() || toParts[1].trim().isEmpty()) {
             throw new EmmaException(usage);
         }
-        return addTask(tasks, new Event(fromParts[0].trim(), toParts[0].trim(), toParts[1].trim()));
+        LocalDate from = parseDate(toParts[0].trim(), "a start date");
+        LocalDate to = parseDate(toParts[1].trim(), "an end date");
+        return addTask(tasks, new Event(fromParts[0].trim(), from, to));
     }
 
     /**

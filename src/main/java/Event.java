@@ -1,19 +1,21 @@
+import java.time.LocalDate;
+
 /**
- * A task that runs between a start and an end time.
+ * A task that runs between a start and an end date.
  */
 public class Event extends Task {
 
-    private final String from;
-    private final String to;
+    private final LocalDate from;
+    private final LocalDate to;
 
     /**
      * Creates an event.
      *
      * @param description task description
-     * @param from when the event starts
-     * @param to when the event ends
+     * @param from the date the event starts
+     * @param to the date the event ends
      */
-    public Event(String description, String from, String to) {
+    public Event(String description, LocalDate from, LocalDate to) {
         super(description);
         this.from = from;
         this.to = to;
@@ -24,15 +26,15 @@ public class Event extends Task {
         return "E";
     }
 
-    /** Adds the start and end times to the fields every task saves. */
+    /** Adds the start and end dates to the fields every task saves. */
     @Override
     public String toJson() {
-        return jsonObject(Json.field("from", from), Json.field("to", to));
+        return jsonObject(Json.field("from", from.toString()), Json.field("to", to.toString()));
     }
 
-    /** Appends the start and end times to the standard rendering. */
+    /** Appends the start and end dates to the standard rendering. */
     @Override
     public String toString() {
-        return super.toString() + " (from: " + from + " to: " + to + ")";
+        return super.toString() + " (from: " + Dates.format(from) + " to: " + Dates.format(to) + ")";
     }
 }

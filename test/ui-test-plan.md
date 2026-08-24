@@ -72,14 +72,15 @@ Bye for now! Hope to see you again soon.
 ## TC3: Adding each type of task
 
 **Aim:** `todo`, `deadline` and `event` each create a task and confirm it with
-the correct type icon and timing details.
+the correct type icon, and dates typed as `yyyy-mm-dd` are echoed back with the
+month in words.
 
 **Input**
 
 ```
 todo read book
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
+deadline return book /by 2019-10-15
+event project meeting /from 2019-10-15 /to 2019-10-16
 bye
 ```
 
@@ -89,9 +90,9 @@ bye
 Got it, I've added this:
   [T][ ] read book
 Got it, I've added this:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 15 2019)
 Got it, I've added this:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+  [E][ ] project meeting (from: Oct 15 2019 to: Oct 16 2019)
 Bye for now! Hope to see you again soon.
 ```
 
@@ -106,7 +107,7 @@ type's own rendering.
 
 ```
 todo read book
-deadline return book /by Sunday
+deadline return book /by 2019-10-15
 list
 bye
 ```
@@ -117,10 +118,10 @@ bye
 Got it, I've added this:
   [T][ ] read book
 Got it, I've added this:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 15 2019)
 Here's your tasks:
 1. [T][ ] read book
-2. [D][ ] return book (by: Sunday)
+2. [D][ ] return book (by: Oct 15 2019)
 Bye for now! Hope to see you again soon.
 ```
 
@@ -206,7 +207,7 @@ missing, and adds nothing to the list.
 ```
 todo
 deadline return book
-event project meeting /from Mon 2pm
+event project meeting /from 2019-10-15
 list
 bye
 ```
@@ -215,8 +216,8 @@ bye
 
 ```
 A todo needs a description, like "todo read book".
-A deadline needs a description and a time, like "deadline return book /by Sunday".
-An event needs a description, a start and an end, like "event project meeting /from Mon 2pm /to 4pm".
+A deadline needs a description and a date, like "deadline return book /by 2019-10-15".
+An event needs a description, a start date and an end date, like "event project meeting /from 2019-10-15 /to 2019-10-16".
 You haven't given me anything to track yet!
 Bye for now! Hope to see you again soon.
 ```
@@ -264,16 +265,15 @@ Bye for now! Hope to see you again soon.
 
 ## TC9: Tasks survive a restart
 
-**Aim:** tasks, their done status and their timing details are saved to disk and
-reloaded when Emma is started again; changes made after the restart are saved
-too.
+**Aim:** tasks, their done status and their dates are saved to disk and reloaded
+when Emma is started again; changes made after the restart are saved too.
 
 **Input**
 
 ```
 todo read book
-deadline return book /by Sunday
-event meeting /from Mon 2pm /to 4pm
+deadline return book /by 2019-10-15
+event meeting /from 2019-10-15 /to 2019-10-16
 mark 1
 --- restart ---
 list
@@ -289,20 +289,20 @@ bye
 Got it, I've added this:
   [T][ ] read book
 Got it, I've added this:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 15 2019)
 Got it, I've added this:
-  [E][ ] meeting (from: Mon 2pm to: 4pm)
+  [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
 Nice! I've marked this as done:
   [T][x] read book
 Here's your tasks:
 1. [T][x] read book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] meeting (from: Mon 2pm to: 4pm)
+2. [D][ ] return book (by: Oct 15 2019)
+3. [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
 Okay, I've removed this:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 15 2019)
 Here's your tasks:
 1. [T][x] read book
-2. [E][ ] meeting (from: Mon 2pm to: 4pm)
+2. [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
 Bye for now! Hope to see you again soon.
 ```
 
@@ -327,6 +327,36 @@ bye
 ```
 Sorry, I don't know what that means!
 Sorry, I don't know what that means!
+You haven't given me anything to track yet!
+Bye for now! Hope to see you again soon.
+```
+
+---
+
+## TC11: Dates Emma cannot understand
+
+**Aim:** `deadline` and `event` reject anything that is not a real date written
+as `yyyy-mm-dd` — including a well-formed date whose day does not exist — naming
+the part of the command at fault and adding nothing to the list.
+
+**Input**
+
+```
+deadline return book /by Sunday
+deadline return book /by 2019-02-30
+event meeting /from 2019-13-01 /to 2019-10-16
+event meeting /from 2019-10-15 /to next week
+list
+bye
+```
+
+**Expected output**
+
+```
+I need a due date as a date like 2019-10-15, but I got "Sunday".
+I need a due date as a date like 2019-10-15, but I got "2019-02-30".
+I need a start date as a date like 2019-10-15, but I got "2019-13-01".
+I need an end date as a date like 2019-10-15, but I got "next week".
 You haven't given me anything to track yet!
 Bye for now! Hope to see you again soon.
 ```

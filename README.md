@@ -52,15 +52,13 @@ VS Code is configured to use JDK 25 (`Java: Configure Java Runtime`).
 | Command | What it does | Example |
 |---|---|---|
 | `todo DESCRIPTION` | Adds a task with no timing | `todo read book` |
-| `deadline DESCRIPTION /by TIME` | Adds a task due at a time | `deadline return book /by Sunday` |
-| `event DESCRIPTION /from START /to END` | Adds a task spanning two times | `event project meeting /from Mon 2pm /to 4pm` |
+| `deadline DESCRIPTION /by DATE` | Adds a task due on a date | `deadline return book /by 2019-10-15` |
+| `event DESCRIPTION /from START /to END` | Adds a task spanning two dates | `event project meeting /from 2019-10-15 /to 2019-10-16` |
 | `list` | Shows every task, numbered from 1 | `list` |
 | `mark NUMBER` | Marks a task done | `mark 2` |
 | `unmark NUMBER` | Marks a task not done | `unmark 2` |
 | `delete NUMBER` | Removes a task | `delete 2` |
 | `bye` | Exits | `bye` |
-
-Times are stored as free text — Emma does not yet interpret them as dates.
 
 Tasks are shown as `[TYPE][STATUS] description`, where the type is `T`, `D` or
 `E`, and the status is `x` once the task is done.
@@ -77,7 +75,7 @@ plain JSON so you can read or edit it by hand:
     "type": "D",
     "done": false,
     "description": "return book",
-    "by": "Sunday"
+    "by": "2019-10-15"
   }
 ]
 ```
@@ -95,7 +93,8 @@ All source lives in [src/main/java/](src/main/java/):
 |---|---|
 | `Emma.java` | The main loop: reads a line, picks the command, prints the reply |
 | `Task.java` | The shared behaviour of a task: description, done status, rendering |
-| `Todo.java`, `Deadline.java`, `Event.java` | The three task types and their extra timing details |
+| `Todo.java`, `Deadline.java`, `Event.java` | The three task types and their extra dates |
+| `Dates.java` | Renders a `LocalDate` the way Emma shows it |
 | `TaskList.java` | Holds the tasks and saves after every change |
 | `Storage.java` | Reads and writes `data/emma.json` |
 | `Json.java` | Quoting and escaping helpers for writing JSON |

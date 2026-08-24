@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.Map;
  *     "type": "D",
  *     "done": false,
  *     "description": "return book",
- *     "by": "Sunday"
+ *     "by": "2019-10-15"
  *   }
  * ]
  * </pre>
@@ -116,8 +118,8 @@ public class Storage {
             String description = require(fields, "description");
             Task task = switch (require(fields, "type")) {
             case "T" -> new Todo(description);
-            case "D" -> new Deadline(description, require(fields, "by"));
-            case "E" -> new Event(description, require(fields, "from"), require(fields, "to"));
+            case "D" -> new Deadline(description, readDate(fields, "by"));
+            case "E" -> new Event(description, readDate(fields, "from"), readDate(fields, "to"));
             default -> throw error("\"type\" must be \"T\", \"D\" or \"E\"");
             };
             task.setDone(isDone);
@@ -130,6 +132,16 @@ public class Storage {
                 throw error("a task is missing its \"" + key + "\" field");
             }
             return value;
+        }
+
+        /** Reads a field that must hold a date written as yyyy-mm-dd. */
+        private LocalDate readDate(Map<String, String> fields, String key) throws EmmaException {
+            String value = require(fields, key);
+            try {
+                return LocalDate.parse(value);
+            } catch (DateTimeParseException e) {
+                throw error("\"" + key + "\" must be a date like \"2019-10-15\", not \"" + value + "\"");
+            }
         }
 
         private String readString() throws EmmaException {
