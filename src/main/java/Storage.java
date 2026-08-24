@@ -60,7 +60,7 @@ public class Storage {
         List<Task> all = tasks.getTasks();
         StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < all.size(); i++) {
-            json.append(i > 0 ? ",\n" : "\n").append(toJson(all.get(i)));
+            json.append(i > 0 ? ",\n" : "\n").append(all.get(i).toJson());
         }
         json.append(all.isEmpty() ? "]\n" : "\n]\n");
         try {
@@ -69,38 +69,6 @@ public class Storage {
         } catch (IOException e) {
             throw new EmmaException("I couldn't save to " + FILE + ": " + e.getMessage());
         }
-    }
-
-    /** Renders one task as an indented JSON object. */
-    private static String toJson(Task task) {
-        StringBuilder json = new StringBuilder();
-        json.append("  {\n");
-        json.append("    \"type\": ").append(quote(task.getTypeIcon())).append(",\n");
-        json.append("    \"done\": ").append(task.isDone()).append(",\n");
-        json.append("    \"description\": ").append(quote(task.getDescription()));
-        if (task instanceof Deadline deadline) {
-            json.append(",\n    \"by\": ").append(quote(deadline.getBy()));
-        } else if (task instanceof Event event) {
-            json.append(",\n    \"from\": ").append(quote(event.getFrom()));
-            json.append(",\n    \"to\": ").append(quote(event.getTo()));
-        }
-        json.append("\n  }");
-        return json.toString();
-    }
-
-    /** Wraps text in quotes, escaping the characters JSON does not allow raw. */
-    private static String quote(String value) {
-        StringBuilder quoted = new StringBuilder("\"");
-        for (char c : value.toCharArray()) {
-            switch (c) {
-            case '"' -> quoted.append("\\\"");
-            case '\\' -> quoted.append("\\\\");
-            case '\n' -> quoted.append("\\n");
-            case '\t' -> quoted.append("\\t");
-            default -> quoted.append(c);
-            }
-        }
-        return quoted.append('"').toString();
     }
 
     /**

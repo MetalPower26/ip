@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A single thing the user wants to keep track of, and whether it is done.
  * Subclasses decide the type icon and any extra timing details.
@@ -27,29 +30,38 @@ public abstract class Task {
     }
 
     /**
-     * Returns the text the user gave for this task.
-     *
-     * @return task description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Reports whether this task is done.
-     *
-     * @return true if the task is done
-     */
-    public boolean isDone() {
-        return isDone;
-    }
-
-    /**
      * Returns the type icon shown in the first bracket.
      *
      * @return task type icon
      */
     protected abstract String getTypeIcon();
+
+    /**
+     * Builds this task's JSON object: the fields every task has, followed by
+     * any the subclass passes in. Commas and indenting are handled here, so
+     * subclasses never deal with separators.
+     *
+     * @param extraFields field pairs built with {@link Json#field}
+     * @return this task as an indented JSON object
+     */
+    protected String jsonObject(String... extraFields) {
+        List<String> fields = new ArrayList<>();
+        fields.add(Json.field("type", getTypeIcon()));
+        fields.add(Json.field("done", isDone));
+        fields.add(Json.field("description", description));
+        fields.addAll(List.of(extraFields));
+        return "  {\n    " + String.join(",\n    ", fields) + "\n  }";
+    }
+
+    /**
+     * Renders the task as an indented JSON object holding the fields needed to
+     * rebuild it. Subclasses with timing of their own override this.
+     *
+     * @return this task as JSON
+     */
+    public String toJson() {
+        return jsonObject();
+    }
 
     /** Renders the task as "[icon][x] description"; subclasses append their own details. */
     @Override
