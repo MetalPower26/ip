@@ -528,3 +528,34 @@ I don't know what "/on" means in a filter.
 I need a cutoff date as a date like 2019-10-15, but I got "Sunday".
 Bye for now! Hope to see you again soon.
 ```
+
+---
+
+## TC17: Filters typed with extra spaces
+
+**Aim:** `filter` tolerates extra spaces around the type and the optional flag,
+the way the other commands already do.
+
+**Input**
+
+```
+todo read book
+deadline return book /by 2019-10-15
+filter  /type todo
+filter /type deadline  /due-by  2019-10-15
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [T][ ] read book
+Got it, I've added this:
+  [D][ ] return book (by: Oct 15 2019)
+Here's what matches:
+1. [T][ ] read book
+Here's what matches:
+2. [D][ ] return book (by: Oct 15 2019)
+Bye for now! Hope to see you again soon.
+```

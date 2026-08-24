@@ -205,10 +205,11 @@ public class Emma {
      */
     private static String handleFilter(TaskList tasks, String arguments) throws EmmaException {
         String usage = "A filter needs a type, like \"filter /type deadline\".";
-        if (!arguments.startsWith("/type ")) {
+        String trimmed = arguments.trim();
+        if (!trimmed.startsWith("/type ")) {
             throw new EmmaException(usage);
         }
-        String[] parts = arguments.substring("/type ".length()).trim().split(" ", 2);
+        String[] parts = trimmed.substring("/type ".length()).trim().split(" ", 2);
         String type = parts[0];
         Predicate<Task> matches = switch (type) {
         case "todo" -> task -> task instanceof Todo;
