@@ -23,6 +23,16 @@ public class Deadline extends Task {
         return "D";
     }
 
+    /**
+     * Checks whether this deadline falls on or before a date.
+     *
+     * @param date the latest date to allow
+     * @return true if this deadline is due no later than the date
+     */
+    public boolean isDueBy(LocalDate date) {
+        return !by.isAfter(date);
+    }
+
     /** Adds the due date to the fields every task saves. */
     @Override
     public String toJson() {

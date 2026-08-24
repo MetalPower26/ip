@@ -58,6 +58,9 @@ VS Code is configured to use JDK 25 (`Java: Configure Java Runtime`).
 | `mark NUMBER` | Marks a task done | `mark 2` |
 | `unmark NUMBER` | Marks a task not done | `unmark 2` |
 | `delete NUMBER` | Removes a task | `delete 2` |
+| `filter /type TYPE` | Shows only `todo`, `deadline` or `event` tasks | `filter /type deadline` |
+| `filter /type deadline /due-by DATE` | Shows deadlines due on or before a date | `filter /type deadline /due-by 2019-10-15` |
+| `filter /type event /at DATE` | Shows events running on a date | `filter /type event /at 2019-10-15` |
 | `bye` | Exits | `bye` |
 
 Tasks are shown as `[TYPE][STATUS] description`, where the type is `T`, `D` or

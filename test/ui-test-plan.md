@@ -387,3 +387,144 @@ Here's your tasks:
 1. [E][ ] meeting (from: Oct 15 2019 to: Oct 15 2019)
 Bye for now! Hope to see you again soon.
 ```
+
+---
+
+## TC13: Filtering by task type
+
+**Aim:** `filter /type` shows only the tasks of that type, and keeps each task's
+number from the full list rather than renumbering from 1.
+
+**Input**
+
+```
+todo read book
+deadline return book /by 2019-10-15
+event meeting /from 2019-10-15 /to 2019-10-16
+filter /type todo
+filter /type deadline
+filter /type event
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [T][ ] read book
+Got it, I've added this:
+  [D][ ] return book (by: Oct 15 2019)
+Got it, I've added this:
+  [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
+Here's what matches:
+1. [T][ ] read book
+Here's what matches:
+2. [D][ ] return book (by: Oct 15 2019)
+Here's what matches:
+3. [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
+Bye for now! Hope to see you again soon.
+```
+
+---
+
+## TC14: Filtering deadlines by a cutoff date
+
+**Aim:** `filter /type deadline /due-by` keeps deadlines due on or before the
+date, includes one falling exactly on it, and says so when none match.
+
+**Input**
+
+```
+deadline early /by 2019-10-10
+deadline exact /by 2019-10-15
+deadline late /by 2019-10-20
+todo read book
+filter /type deadline /due-by 2019-10-15
+filter /type deadline /due-by 2019-01-01
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [D][ ] early (by: Oct 10 2019)
+Got it, I've added this:
+  [D][ ] exact (by: Oct 15 2019)
+Got it, I've added this:
+  [D][ ] late (by: Oct 20 2019)
+Got it, I've added this:
+  [T][ ] read book
+Here's what matches:
+1. [D][ ] early (by: Oct 10 2019)
+2. [D][ ] exact (by: Oct 15 2019)
+Nothing matches that filter.
+Bye for now! Hope to see you again soon.
+```
+
+---
+
+## TC15: Filtering events by a date
+
+**Aim:** `filter /type event /at` keeps events running on that date, counting a
+date in the middle of a multi-day event and one on its first or last day.
+
+**Input**
+
+```
+event conference /from 2019-10-15 /to 2019-10-18
+event standup /from 2019-10-20 /to 2019-10-20
+filter /type event /at 2019-10-17
+filter /type event /at 2019-10-18
+filter /type event /at 2019-10-20
+filter /type event /at 2019-10-19
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [E][ ] conference (from: Oct 15 2019 to: Oct 18 2019)
+Got it, I've added this:
+  [E][ ] standup (from: Oct 20 2019 to: Oct 20 2019)
+Here's what matches:
+1. [E][ ] conference (from: Oct 15 2019 to: Oct 18 2019)
+Here's what matches:
+1. [E][ ] conference (from: Oct 15 2019 to: Oct 18 2019)
+Here's what matches:
+2. [E][ ] standup (from: Oct 20 2019 to: Oct 20 2019)
+Nothing matches that filter.
+Bye for now! Hope to see you again soon.
+```
+
+---
+
+## TC16: Filters Emma cannot carry out
+
+**Aim:** `filter` rejects a missing or unknown type, an option used with the
+wrong type, an unknown option, and an option not followed by a real date.
+
+**Input**
+
+```
+filter
+filter /type task
+filter /type todo /due-by 2019-10-15
+filter /type deadline /at 2019-10-15
+filter /type event /on 2019-10-15
+filter /type deadline /due-by Sunday
+bye
+```
+
+**Expected output**
+
+```
+A filter needs a type, like "filter /type deadline".
+I can only filter by todo, deadline or event.
+Only a deadline filter takes "/due-by".
+Only an event filter takes "/at".
+I don't know what "/on" means in a filter.
+I need a cutoff date as a date like 2019-10-15, but I got "Sunday".
+Bye for now! Hope to see you again soon.
+```

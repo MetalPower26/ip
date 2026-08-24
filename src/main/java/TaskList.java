@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * The tasks Emma is tracking.
@@ -109,9 +110,23 @@ public class TaskList {
 
     /** Builds a 1-based numbered list of the tasks, one per line; empty if there are none. */
     public String format() {
+        return format(task -> true);
+    }
+
+    /**
+     * Builds a numbered list of the matching tasks, keeping each task's number from
+     * the full list so that it can still be marked or deleted by that number.
+     *
+     * @param matches the test a task must pass to be listed
+     * @return the matching tasks, one per line; empty if none match
+     */
+    public String format(Predicate<Task> matches) {
         StringBuilder list = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
-            if (i > 0) {
+            if (!matches.test(tasks.get(i))) {
+                continue;
+            }
+            if (list.length() > 0) {
                 list.append("\n");
             }
             list.append(i + 1).append(". ").append(tasks.get(i));

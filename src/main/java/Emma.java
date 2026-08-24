@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class Emma {
 
@@ -194,6 +195,55 @@ public class Emma {
     }
 
     /**
+     * Returns Emma's response to the "filter" command.
+     *
+     * @param tasks the task list to search
+     * @param arguments the arguments after the command word
+     * @return Emma's response
+     * @throws EmmaException if the type is missing or unknown, or an option does not
+     *     belong to that type or is not followed by a real date
+     */
+    private static String handleFilter(TaskList tasks, String arguments) throws EmmaException {
+        String usage = "A filter needs a type, like \"filter /type deadline\".";
+        if (!arguments.startsWith("/type ")) {
+            throw new EmmaException(usage);
+        }
+        String[] parts = arguments.substring("/type ".length()).trim().split(" ", 2);
+        String type = parts[0];
+        Predicate<Task> matches = switch (type) {
+        case "todo" -> task -> task instanceof Todo;
+        case "deadline" -> task -> task instanceof Deadline;
+        case "event" -> task -> task instanceof Event;
+        default -> throw new EmmaException("I can only filter by todo, deadline or event.");
+        };
+
+        String option = parts.length > 1 ? parts[1].trim() : "";
+        if (!option.isEmpty()) {
+            String[] optionParts = option.split(" ", 2);
+            String flag = optionParts[0];
+            String date = optionParts.length > 1 ? optionParts[1].trim() : "";
+            if (flag.equals("/due-by") && type.equals("deadline")) {
+                LocalDate dueBy = parseDate(date, "a cutoff date");
+                matches = task -> task instanceof Deadline deadline && deadline.isDueBy(dueBy);
+            } else if (flag.equals("/at") && type.equals("event")) {
+                LocalDate at = parseDate(date, "an event date");
+                matches = task -> task instanceof Event event && event.isOn(at);
+            } else if (flag.equals("/due-by") || flag.equals("/at")) {
+                String owner = flag.equals("/due-by") ? "a deadline" : "an event";
+                throw new EmmaException("Only " + owner + " filter takes \"" + flag + "\".");
+            } else {
+                throw new EmmaException("I don't know what \"" + flag + "\" means in a filter.");
+            }
+        }
+
+        String matched = tasks.format(matches);
+        if (matched.isEmpty()) {
+            return "Nothing matches that filter.";
+        }
+        return "Here's what matches:\n" + matched;
+    }
+
+    /**
      * Runs the chatbot: greets the user, then tracks tasks until "bye".
      *
      * @param args empty
@@ -253,6 +303,8 @@ public class Emma {
                         printResponse(handleDeadline(tasks, argument));
                     } else if (command.equals("event")) {
                         printResponse(handleEvent(tasks, argument));
+                    } else if (command.equals("filter")) {
+                        printResponse(handleFilter(tasks, argument));
                     } else {
                         throw new EmmaException("Sorry, I don't know what that means!");
                     }
