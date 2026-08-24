@@ -64,7 +64,12 @@ Use the scratchpad directory for all temporary files.
 
 - Every case's input must end with `bye` so the program terminates. Without it
   the run still ends at end-of-input, but the exit message goes untested.
-- A case is one chatbot session. Tasks added by an earlier case are gone by the
-  next one, so a case that needs tasks present must create them itself.
+- Each case runs in its own empty working directory. Emma saves to
+  `./data/emma.json` relative to that directory, so cases never inherit each
+  other's saved tasks and the repository's real data file is never touched.
+- A line reading exactly `--- restart ---` in the input ends the session and
+  starts a new one in the same directory, which is how a case tests that saved
+  tasks are reloaded. The runner drops the banner and greeting of every session,
+  so expected output holds only Emma's responses either side of the restart.
 - If `javac` fails, report the compile error and stop — that is a failure of the
   session, not of a test case.

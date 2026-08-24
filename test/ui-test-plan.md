@@ -20,8 +20,13 @@ strips the following before comparing, so leave them out:
 Indentation *within* a response is significant — the two-space indent before a
 task in an "added"/"marked" confirmation is part of the expected output.
 
-Each session starts with an empty task list, so a case that needs existing tasks
-must add them itself.
+Each case runs in its own empty working directory, so it starts with no saved
+tasks and never touches the repository's real `data/emma.json`. A case that
+needs existing tasks must add them itself.
+
+A line reading exactly `--- restart ---` inside an Input block ends the chatbot
+session and starts a new one in the same directory. Use it to check that tasks
+saved by one run are loaded by the next.
 
 ---
 
@@ -257,7 +262,53 @@ Bye for now! Hope to see you again soon.
 
 ---
 
-## TC9: Unrecognised command
+## TC9: Tasks survive a restart
+
+**Aim:** tasks, their done status and their timing details are saved to disk and
+reloaded when Emma is started again; changes made after the restart are saved
+too.
+
+**Input**
+
+```
+todo read book
+deadline return book /by Sunday
+event meeting /from Mon 2pm /to 4pm
+mark 1
+--- restart ---
+list
+delete 2
+--- restart ---
+list
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [T][ ] read book
+Got it, I've added this:
+  [D][ ] return book (by: Sunday)
+Got it, I've added this:
+  [E][ ] meeting (from: Mon 2pm to: 4pm)
+Nice! I've marked this as done:
+  [T][x] read book
+Here's your tasks:
+1. [T][x] read book
+2. [D][ ] return book (by: Sunday)
+3. [E][ ] meeting (from: Mon 2pm to: 4pm)
+Okay, I've removed this:
+  [D][ ] return book (by: Sunday)
+Here's your tasks:
+1. [T][x] read book
+2. [E][ ] meeting (from: Mon 2pm to: 4pm)
+Bye for now! Hope to see you again soon.
+```
+
+---
+
+## TC10: Unrecognised command
 
 **Aim:** unknown input is reported as unknown rather than silently stored as a
 task, and the session carries on afterwards.
