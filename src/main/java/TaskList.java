@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The tasks Emma is tracking.
@@ -65,6 +67,16 @@ public class TaskList {
             throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
         }
         return tasks.remove(taskNumber - 1);
+    }
+
+    /**
+     * Returns the tasks in order, for saving. The list cannot be modified
+     * through this view; use add, applyMark and delete instead.
+     *
+     * @return a read-only view of the stored tasks
+     */
+    public List<Task> getTasks() {
+        return Collections.unmodifiableList(tasks);
     }
 
     /**

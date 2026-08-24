@@ -16,6 +16,15 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /**
+     * Returns when the task is due.
+     *
+     * @return the due time as the user typed it
+     */
+    public String getBy() {
+        return by;
+    }
+
     @Override
     protected String getTypeIcon() {
         return "D";

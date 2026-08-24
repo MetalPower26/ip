@@ -27,6 +27,24 @@ public abstract class Task {
     }
 
     /**
+     * Returns the text the user gave for this task.
+     *
+     * @return task description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Reports whether this task is done.
+     *
+     * @return true if the task is done
+     */
+    public boolean isDone() {
+        return isDone;
+    }
+
+    /**
      * Returns the type icon shown in the first bracket.
      *
      * @return task type icon

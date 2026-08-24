@@ -30,15 +30,21 @@ inputs="$1"
 raw_out="$2"
 norm_out="$3"
 
+inputs="$(cd "$(dirname "$inputs")" && pwd)/$(basename "$inputs")"
+
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 classes="$(mktemp -d)"
-trap 'rm -rf "$classes"' EXIT
+# Emma saves to ./data/emma.json relative to the working directory, so each case
+# runs in its own empty directory. That keeps cases from inheriting each other's
+# saved tasks, and leaves the repo's own data/emma.json untouched.
+sandbox="$(mktemp -d)"
+trap 'rm -rf "$classes" "$sandbox"' EXIT
 
 javac -d "$classes" "$repo_root"/src/main/java/*.java
 
 # The program may exit non-zero if it crashes; keep the transcript either way
 # so the failure report can show what actually happened.
-java -cp "$classes" Emma < "$inputs" > "$raw_out" 2>&1 || true
+(cd "$sandbox" && java -cp "$classes" Emma < "$inputs") > "$raw_out" 2>&1 || true
 
 sed -e 's/\x1b\[[0-9;]*m//g' -e 's/[[:space:]]*$//' "$raw_out" \
     | tr -d '\r' \

@@ -165,6 +165,21 @@ public class Emma {
     }
 
     /**
+     * Reports whether a command can change the task list, and so needs saving.
+     *
+     * @param command the command word the user typed
+     * @return true if the command may modify the list
+     */
+    private static boolean changesTasks(String command) {
+        return command.equals("todo")
+                || command.equals("deadline")
+                || command.equals("event")
+                || command.equals("mark")
+                || command.equals("unmark")
+                || command.equals("delete");
+    }
+
+    /**
      * Runs the chatbot: greets the user, then tracks tasks until "bye".
      *
      * @param args empty
@@ -181,7 +196,14 @@ public class Emma {
         System.out.println(banner);
         printResponse(greeting);
 
-        TaskList tasks = new TaskList();
+        Storage storage = new Storage();
+        TaskList tasks;
+        try {
+            tasks = storage.load();
+        } catch (EmmaException e) {
+            printResponse(e.getMessage() + "\nI'll start with an empty list.");
+            tasks = new TaskList();
+        }
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -215,6 +237,9 @@ public class Emma {
                         printResponse(handleEvent(tasks, argument));
                     } else {
                         throw new EmmaException("Sorry, I don't know what that means!");
+                    }
+                    if (changesTasks(command)) {
+                        storage.save(tasks);
                     }
                 } catch (EmmaException e) {
                     printResponse(e.getMessage());
