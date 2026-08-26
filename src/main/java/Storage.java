@@ -26,8 +26,16 @@ import java.util.Map;
  */
 public class Storage {
 
-    /** Built from parts so the separator is right on every operating system. */
-    private static final Path FILE = Path.of("data", "emma.json");
+    private final Path file;
+
+    /**
+     * Creates storage backed by a file.
+     *
+     * @param filePath where the tasks are kept, as in "data/emma.json"
+     */
+    public Storage(String filePath) {
+        this.file = Path.of(filePath);
+    }
 
     /**
      * Reads the saved tasks, or returns an empty list if nothing is saved yet.
@@ -36,16 +44,16 @@ public class Storage {
      * @throws EmmaException if the file exists but cannot be read or understood
      */
     public List<Task> load() throws EmmaException {
-        if (!Files.exists(FILE)) {
+        if (!Files.exists(file)) {
             return List.of();
         }
         String text;
         try {
-            text = Files.readString(FILE);
+            text = Files.readString(file);
         } catch (IOException e) {
-            throw new EmmaException("I couldn't read " + FILE + ": " + e.getMessage());
+            throw new EmmaException("I couldn't read " + file + ": " + e.getMessage());
         }
-        return new JsonReader(text).readTasks();
+        return new JsonReader(text, file).readTasks();
     }
 
     /**
@@ -62,10 +70,13 @@ public class Storage {
         }
         json.append(all.isEmpty() ? "]\n" : "\n]\n");
         try {
-            Files.createDirectories(FILE.getParent());
-            Files.writeString(FILE, json.toString());
+            Path folder = file.getParent();
+            if (folder != null) {
+                Files.createDirectories(folder);
+            }
+            Files.writeString(file, json.toString());
         } catch (IOException e) {
-            throw new EmmaException("I couldn't save to " + FILE + ": " + e.getMessage());
+            throw new EmmaException("I couldn't save to " + file + ": " + e.getMessage());
         }
     }
 
@@ -77,10 +88,12 @@ public class Storage {
     private static final class JsonReader {
 
         private final String text;
+        private final Path file;
         private int pos;
 
-        private JsonReader(String text) {
+        private JsonReader(String text, Path file) {
             this.text = text;
+            this.file = file;
             this.pos = 0;
         }
 
@@ -211,7 +224,7 @@ public class Storage {
                     line++;
                 }
             }
-            return new EmmaException(FILE + " looks wrong on line " + line + ": " + problem + ".");
+            return new EmmaException(file + " looks wrong on line " + line + ": " + problem + ".");
         }
     }
 }
