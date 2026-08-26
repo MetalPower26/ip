@@ -30,6 +30,15 @@ public abstract class Task {
     }
 
     /**
+     * Checks whether this task has been marked done.
+     *
+     * @return true if the task is done
+     */
+    public boolean isDone() {
+        return isDone;
+    }
+
+    /**
      * Returns the type icon shown in the first bracket.
      *
      * @return task type icon

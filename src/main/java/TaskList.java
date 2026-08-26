@@ -4,33 +4,28 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * The tasks Emma is tracking.
+ * The tasks Emma is tracking, held in memory only.
  */
 public class TaskList {
 
     private final ArrayList<Task> tasks = new ArrayList<>();
-    private final Storage storage;
 
     /**
-     * Creates a list that saves itself whenever it changes.
+     * Creates a list holding the given tasks.
      *
-     * @param storage where the tasks are kept between runs
-     * @param initialTasks the tasks already on disk; seeding does not re-save them
+     * @param initialTasks the tasks to start with
      */
-    public TaskList(Storage storage, List<Task> initialTasks) {
-        this.storage = storage;
+    public TaskList(List<Task> initialTasks) {
         this.tasks.addAll(initialTasks);
     }
 
     /**
-     * Adds a task to the end of the list and saves.
+     * Adds a task to the end of the list.
      *
      * @param task the task to store
-     * @throws EmmaException if the tasks could not be saved
      */
-    public void add(Task task) throws EmmaException {
+    public void add(Task task) {
         tasks.add(task);
-        storage.save(this);
     }
 
     /**
@@ -44,13 +39,40 @@ public class TaskList {
     }
 
     /**
-     * Returns the task corresponding to the number. 
-     * 
-     * @param taskNumber the 1-based task number; must be valid
+     * Returns the numbered task.
+     *
+     * @param taskNumber the 1-based task number
      * @return the matching task
+     * @throws IndexOutOfBoundsException if no task has that number
      */
-    private Task get(int taskNumber) {
+    public Task get(int taskNumber) {
+        if (!isValidTaskNumber(taskNumber)) {
+            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
+        }
         return tasks.get(taskNumber - 1);
+    }
+
+    /**
+     * Puts a task back at a given position, so that a delete can be undone.
+     *
+     * @param taskNumber the 1-based position to insert at
+     * @param task the task to put back
+     * @throws IndexOutOfBoundsException if the position is past one place after the end
+     */
+    public void insert(int taskNumber, Task task) {
+        if (taskNumber < 1 || taskNumber > tasks.size() + 1) {
+            throw new IndexOutOfBoundsException("No position numbered " + taskNumber);
+        }
+        tasks.add(taskNumber - 1, task);
+    }
+
+    /**
+     * Returns how many tasks are stored.
+     *
+     * @return the number of tasks
+     */
+    public int size() {
+        return tasks.size();
     }
 
     /**
@@ -60,15 +82,10 @@ public class TaskList {
      * @param isDone true for "mark", false for "unmark"
      * @return the task that was changed
      * @throws IndexOutOfBoundsException if no task has that number
-     * @throws EmmaException if the tasks could not be saved
      */
-    public Task applyMark(int taskNumber, boolean isDone) throws EmmaException {
-        if (!isValidTaskNumber(taskNumber)) {
-            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
-        }
+    public Task applyMark(int taskNumber, boolean isDone) {
         Task task = get(taskNumber);
         task.setDone(isDone);
-        storage.save(this);
         return task;
     }
 
@@ -78,15 +95,12 @@ public class TaskList {
      * @param taskNumber the 1-based task number
      * @return the task that was removed
      * @throws IndexOutOfBoundsException if no task has that number
-     * @throws EmmaException if the tasks could not be saved
      */
-    public Task delete(int taskNumber) throws EmmaException {
+    public Task delete(int taskNumber) {
         if (!isValidTaskNumber(taskNumber)) {
             throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
         }
-        Task removed = tasks.remove(taskNumber - 1);
-        storage.save(this);
-        return removed;
+        return tasks.remove(taskNumber - 1);
     }
 
     /**

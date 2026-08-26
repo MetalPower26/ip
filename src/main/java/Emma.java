@@ -64,19 +64,43 @@ public class Emma {
     }
 
     /**
+     * Saves the tasks, putting the list back the way it was if the save fails, so that
+     * a change is either both made and saved or neither.
+     *
+     * @param storage where the tasks are saved
+     * @param tasks the tasks to save
+     * @param undo reverses the change that was just made
+     * @throws EmmaException if the tasks could not be saved
+     */
+    private static void saveOrUndo(Storage storage, TaskList tasks, Runnable undo)
+            throws EmmaException {
+        try {
+            storage.save(tasks);
+        } catch (EmmaException e) {
+            undo.run();
+            throw e;
+        }
+    }
+
+    /**
      * Turns a "mark"/"unmark" command into Emma's response.
      *
      * @param tasks the task list to update
+     * @param storage where the change is saved
      * @param arguments the arguments after the command word
      * @param isDone true for "mark", false for "unmark"
      * @return Emma's response
-     * @throws EmmaException if the argument is not a number, or names no task
+     * @throws EmmaException if the argument is not a number, names no task, or the
+     *     change could not be saved
      */
-    private static String handleMark(TaskList tasks, String arguments, boolean isDone)
-            throws EmmaException {
+    private static String handleMark(TaskList tasks, Storage storage, String arguments,
+            boolean isDone) throws EmmaException {
         int taskNumber = parseTaskNumber(arguments, isDone ? "mark" : "unmark");
         try {
-            Task task = tasks.applyMark(taskNumber, isDone);
+            Task task = tasks.get(taskNumber);
+            boolean wasDone = task.isDone();
+            tasks.applyMark(taskNumber, isDone);
+            saveOrUndo(storage, tasks, () -> task.setDone(wasDone));
             String message = isDone
                     ? "Nice! I've marked this as done:"
                     : "Okay, I've marked this as not done yet:";
@@ -90,14 +114,18 @@ public class Emma {
      * Turns a "delete" command into Emma's response.
      *
      * @param tasks the task list to remove from
+     * @param storage where the change is saved
      * @param arguments the arguments after the command word
      * @return Emma's response
-     * @throws EmmaException if the argument is not a number, or names no task
+     * @throws EmmaException if the argument is not a number, names no task, or the
+     *     change could not be saved
      */
-    private static String handleDelete(TaskList tasks, String arguments) throws EmmaException {
+    private static String handleDelete(TaskList tasks, Storage storage, String arguments)
+            throws EmmaException {
         int taskNumber = parseTaskNumber(arguments, "delete");
         try {
             Task task = tasks.delete(taskNumber);
+            saveOrUndo(storage, tasks, () -> tasks.insert(taskNumber, task));
             return "Okay, I've removed this:\n  " + task;
         } catch (IndexOutOfBoundsException e) {
             throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
@@ -121,12 +149,15 @@ public class Emma {
      * Stores a newly created task and reports it back.
      *
      * @param tasks the task list to add to
+     * @param storage where the new task is saved
      * @param task the task to store
      * @return Emma's response
-     * @throws EmmaException if the tasks could not be saved
+     * @throws EmmaException if the task could not be saved
      */
-    private static String addTask(TaskList tasks, Task task) throws EmmaException {
+    private static String addTask(TaskList tasks, Storage storage, Task task)
+            throws EmmaException {
         tasks.add(task);
+        saveOrUndo(storage, tasks, () -> tasks.delete(tasks.size()));
         return "Got it, I've added this:\n  " + task;
     }
 
@@ -134,27 +165,32 @@ public class Emma {
      * Returns Emma's response to the "todo" command.
      *
      * @param tasks the task list to add to
+     * @param storage where the new task is saved
      * @param arguments the arguments after the command word
      * @return Emma's response
-     * @throws EmmaException if the description is missing
+     * @throws EmmaException if the description is missing, or the task could not be saved
      */
-    private static String handleTodo(TaskList tasks, String arguments) throws EmmaException {
+    private static String handleTodo(TaskList tasks, Storage storage, String arguments)
+            throws EmmaException {
         String description = arguments.trim();
         if (description.isEmpty()) {
             throw new EmmaException("A todo needs a description, like \"todo read book\".");
         }
-        return addTask(tasks, new Todo(description));
+        return addTask(tasks, storage, new Todo(description));
     }
 
     /**
      * Returns Emma's response to the "deadline" command.
      *
      * @param tasks the task list to add to
+     * @param storage where the new task is saved
      * @param arguments the arguments after the command word
      * @return Emma's response
-     * @throws EmmaException if the description or the date is missing, or is not a real date
+     * @throws EmmaException if the description or the date is missing, is not a real date,
+     *     or the task could not be saved
      */
-    private static String handleDeadline(TaskList tasks, String arguments) throws EmmaException {
+    private static String handleDeadline(TaskList tasks, Storage storage, String arguments)
+            throws EmmaException {
         String usage = "A deadline needs a description and a date, "
                 + "like \"deadline return book /by 2019-10-15\".";
         String[] parts = arguments.split(" /by ", 2);
@@ -162,19 +198,21 @@ public class Emma {
             throw new EmmaException(usage);
         }
         LocalDate by = parseDate(parts[1].trim(), "a due date");
-        return addTask(tasks, new Deadline(parts[0].trim(), by));
+        return addTask(tasks, storage, new Deadline(parts[0].trim(), by));
     }
 
     /**
      * Returns Emma's response to the "event" command.
      *
      * @param tasks the task list to add to
+     * @param storage where the new task is saved
      * @param arguments the arguments after the command word
      * @return Emma's response
      * @throws EmmaException if the description, the start or the end is missing, is not a
-     *     real date, or the event ends before it starts
+     *     real date, the event ends before it starts, or the task could not be saved
      */
-    private static String handleEvent(TaskList tasks, String arguments) throws EmmaException {
+    private static String handleEvent(TaskList tasks, Storage storage, String arguments)
+            throws EmmaException {
         String usage = "An event needs a description, a start date and an end date, "
                 + "like \"event project meeting /from 2019-10-15 /to 2019-10-16\".";
         String[] fromParts = arguments.split(" /from ", 2);
@@ -191,7 +229,7 @@ public class Emma {
             throw new EmmaException("An event has to end on or after it starts, but "
                     + Dates.format(to) + " is before " + Dates.format(from) + ".");
         }
-        return addTask(tasks, new Event(fromParts[0].trim(), from, to));
+        return addTask(tasks, storage, new Event(fromParts[0].trim(), from, to));
     }
 
     /**
@@ -264,10 +302,10 @@ public class Emma {
         Storage storage = new Storage();
         TaskList tasks;
         try {
-            tasks = new TaskList(storage, storage.load());
+            tasks = new TaskList(storage.load());
         } catch (EmmaException e) {
             printResponse(e.getMessage() + "\nI'll start with an empty list.");
-            tasks = new TaskList(storage, List.of());
+            tasks = new TaskList(List.of());
         }
 
         try (Scanner scanner = new Scanner(System.in)) {
@@ -293,17 +331,17 @@ public class Emma {
                     } else if (command.equals("list")) {
                         printResponse(handleList(tasks));
                     } else if (command.equals("mark")) {
-                        printResponse(handleMark(tasks, argument, true));
+                        printResponse(handleMark(tasks, storage, argument, true));
                     } else if (command.equals("unmark")) {
-                        printResponse(handleMark(tasks, argument, false));
+                        printResponse(handleMark(tasks, storage, argument, false));
                     } else if (command.equals("delete")) {
-                        printResponse(handleDelete(tasks, argument));
+                        printResponse(handleDelete(tasks, storage, argument));
                     } else if (command.equals("todo")) {
-                        printResponse(handleTodo(tasks, argument));
+                        printResponse(handleTodo(tasks, storage, argument));
                     } else if (command.equals("deadline")) {
-                        printResponse(handleDeadline(tasks, argument));
+                        printResponse(handleDeadline(tasks, storage, argument));
                     } else if (command.equals("event")) {
-                        printResponse(handleEvent(tasks, argument));
+                        printResponse(handleEvent(tasks, storage, argument));
                     } else if (command.equals("filter")) {
                         printResponse(handleFilter(tasks, argument));
                     } else {
