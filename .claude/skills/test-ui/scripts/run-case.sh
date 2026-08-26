@@ -44,7 +44,7 @@ sessions="$(mktemp -d)"
 sandbox="$(mktemp -d)"
 trap 'rm -rf "$classes" "$sessions" "$sandbox"' EXIT
 
-javac -d "$classes" "$repo_root"/src/main/java/*.java
+javac -d "$classes" "$repo_root"/src/main/java/emma/*.java "$repo_root"/src/main/java/emma/command/*.java
 
 awk -v dir="$sessions" '
     BEGIN { n = 1 }
@@ -59,7 +59,7 @@ for session in $(ls "$sessions" | sort -n); do
     transcript="$sessions/$session.out"
     # The program may exit non-zero if it crashes; keep the transcript either
     # way so the failure report can show what actually happened.
-    (cd "$sandbox" && java -cp "$classes" Emma < "$sessions/$session") \
+    (cd "$sandbox" && java -cp "$classes" emma.Emma < "$sessions/$session") \
         > "$transcript" 2>&1 || true
 
     cat "$transcript" >> "$raw_out"

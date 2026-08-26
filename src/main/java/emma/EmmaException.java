@@ -1,3 +1,5 @@
+package emma;
+
 /**
  * Signals that a command could not be carried out, carrying the message
  * Emma should show the user.

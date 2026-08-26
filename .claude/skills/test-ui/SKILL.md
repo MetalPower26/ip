@@ -37,7 +37,7 @@ what the expected-output block must and must not contain.
       .claude/skills/test-ui/scripts/run-case.sh <inputs> <raw-out> <normalised-out>
       ```
 
-      The script compiles `src/main/java/*.java` fresh each time, so it always
+      The script compiles the sources under `src/main/java` fresh each time, so it always
       tests current source. It writes the full transcript to `<raw-out>` and
       Emma's responses alone to `<normalised-out>`.
 

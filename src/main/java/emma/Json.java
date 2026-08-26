@@ -1,3 +1,5 @@
+package emma;
+
 /**
  * Small helpers for writing JSON by hand, so that quoting and escaping are
  * done the same way everywhere.

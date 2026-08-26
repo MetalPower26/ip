@@ -1,3 +1,5 @@
+package emma;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,6 +79,23 @@ public class Storage {
             Files.writeString(file, json.toString());
         } catch (IOException e) {
             throw new EmmaException("I couldn't save to " + file + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Saves the tasks, putting the list back the way it was if the save fails, so that
+     * a change is either both made and saved or neither.
+     *
+     * @param tasks the tasks to save
+     * @param undo reverses the change that was just made
+     * @throws EmmaException if the tasks could not be saved
+     */
+    public void saveOrUndo(TaskList tasks, Runnable undo) throws EmmaException {
+        try {
+            save(tasks);
+        } catch (EmmaException e) {
+            undo.run();
+            throw e;
         }
     }
 

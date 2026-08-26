@@ -33,18 +33,18 @@ The project has no build tool yet, so compile and run it with the JDK directly.
 From the project root:
 
 ```
-javac -d out src/main/java/*.java
-java -cp out Emma
+javac -d out src/main/java/emma/*.java src/main/java/emma/command/*.java
+java -cp out emma.Emma
 ```
 
 `javac -d out` puts the compiled `.class` files in an `out/` folder (which is
 git-ignored) instead of mixing them in with the source, and `java -cp out` tells
-Java to look there for the `Emma` class to start.
+Java to look there for the `emma.Emma` class to start.
 
 ### In VS Code
 
 With the Extension Pack for Java installed, open the project folder and use the
-**Run** code lens above `main` in [Emma.java](src/main/java/Emma.java). Make sure
+**Run** code lens above `main` in [Emma.java](src/main/java/emma/Emma.java). Make sure
 VS Code is configured to use JDK 25 (`Java: Configure Java Runtime`).
 
 ## Commands
@@ -90,18 +90,34 @@ rather than crashing.
 
 ## Project structure
 
-All source lives in [src/main/java/](src/main/java/):
+All source lives in [src/main/java/](src/main/java/), split into two packages.
+
+[emma/](src/main/java/emma/) — the app and the things it works with:
 
 | File | Responsibility |
 |---|---|
-| `Emma.java` | The main loop: reads a line, picks the command, prints the reply |
+| `Emma.java` | Wires up the parts and runs the conversation |
+| `Ui.java` | Everything printed to and read from the console |
+| `Parser.java` | Turns a typed line into the command it asks for |
 | `Task.java` | The shared behaviour of a task: description, done status, rendering |
 | `Todo.java`, `Deadline.java`, `Event.java` | The three task types and their extra dates |
 | `Dates.java` | Renders a `LocalDate` the way Emma shows it |
-| `TaskList.java` | Holds the tasks and saves after every change |
-| `Storage.java` | Reads and writes `data/emma.json` |
+| `TaskList.java` | Holds the tasks in memory |
+| `Storage.java` | Reads and writes the save file |
 | `Json.java` | Quoting and escaping helpers for writing JSON |
 | `EmmaException.java` | An error carrying the message Emma should show the user |
+
+[emma/command/](src/main/java/emma/command/) — one class per command, each knowing
+how to carry itself out:
+
+| File | Responsibility |
+|---|---|
+| `Command.java` | What every command can do: `execute`, and whether it ends the session |
+| `AddCommand.java` | The shared add-save-report work; subclasses only build the task |
+| `AddTodoCommand.java`, `AddDeadlineCommand.java`, `AddEventCommand.java` | The three ways to add a task |
+| `MarkCommand.java`, `DeleteCommand.java` | Change a numbered task |
+| `ListCommand.java`, `FilterCommand.java` | Show tasks without changing any |
+| `ByeCommand.java` | Ends the conversation |
 
 **Warning:** Keep `src/main/java` as the root folder for Java files (i.e., don't
 rename those folders or move Java files elsewhere), as this is the default

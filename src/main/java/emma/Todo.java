@@ -1,3 +1,5 @@
+package emma;
+
 /**
  * A task with no timing attached.
  */

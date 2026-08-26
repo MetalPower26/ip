@@ -1,3 +1,5 @@
+package emma;
+
 import java.util.Scanner;
 
 /**
@@ -17,7 +19,6 @@ public class Ui {
             + "|_____| |_| |_| |_| |_| |_| |_|  \\__,_|";
     private static final String GREETING = "Hey there! I'm Emma.\n"
             + "What can I do for you?";
-    private static final String GOODBYE = "Bye for now! Hope to see you again soon.";
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -36,11 +37,6 @@ public class Ui {
         System.out.println();
         System.out.println(COLOR_BLUE + "Emma" + COLOR_RESET);
         System.out.println(response);
-    }
-
-    /** Prints Emma's parting line. */
-    public void showGoodbye() {
-        showResponse(GOODBYE);
     }
 
     /**
