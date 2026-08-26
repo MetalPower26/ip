@@ -26,17 +26,24 @@ public class MarkCommand implements Command {
 
     @Override
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
+        Task task;
+        boolean wasDone;
         try {
-            Task task = tasks.get(taskNumber);
-            boolean wasDone = task.isDone();
+            task = tasks.get(taskNumber);
+            wasDone = task.isDone();
             tasks.applyMark(taskNumber, isDone);
-            storage.saveOrUndo(tasks, () -> task.setDone(wasDone));
-            String message = isDone
-                    ? "Nice! I've marked this as done:"
-                    : "Okay, I've marked this as not done yet:";
-            return message + "\n  " + task;
         } catch (IndexOutOfBoundsException e) {
             throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
         }
+        try {
+            storage.save(tasks);
+        } catch (EmmaException e) {
+            task.setDone(wasDone);
+            throw e;
+        }
+        String message = isDone
+                ? "Nice! I've marked this as done:"
+                : "Okay, I've marked this as not done yet:";
+        return message + "\n  " + task;
     }
 }

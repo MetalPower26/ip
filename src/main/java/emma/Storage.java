@@ -83,23 +83,6 @@ public class Storage {
     }
 
     /**
-     * Saves the tasks, putting the list back the way it was if the save fails, so that
-     * a change is either both made and saved or neither.
-     *
-     * @param tasks the tasks to save
-     * @param undo reverses the change that was just made
-     * @throws EmmaException if the tasks could not be saved
-     */
-    public void saveOrUndo(TaskList tasks, Runnable undo) throws EmmaException {
-        try {
-            save(tasks);
-        } catch (EmmaException e) {
-            undo.run();
-            throw e;
-        }
-    }
-
-    /**
      * A small JSON reader for the one shape this file uses: an array of objects
      * whose values are strings or booleans. It is deliberately forgiving about
      * whitespace so the file stays comfortable to edit by hand.

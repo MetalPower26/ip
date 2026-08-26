@@ -23,12 +23,18 @@ public class DeleteCommand implements Command {
 
     @Override
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
+        Task task;
         try {
-            Task task = tasks.delete(taskNumber);
-            storage.saveOrUndo(tasks, () -> tasks.insert(taskNumber, task));
-            return "Okay, I've removed this:\n  " + task;
+            task = tasks.delete(taskNumber);
         } catch (IndexOutOfBoundsException e) {
             throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
         }
+        try {
+            storage.save(tasks);
+        } catch (EmmaException e) {
+            tasks.insert(taskNumber, task);
+            throw e;
+        }
+        return "Okay, I've removed this:\n  " + task;
     }
 }
