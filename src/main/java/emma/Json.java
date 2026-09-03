@@ -33,7 +33,7 @@ public class Json {
      * @param value the field's text
      * @return the pair, ready to join with others
      */
-    public static String field(String key, String value) {
+    public static String buildField(String key, String value) {
         return quote(key) + ": " + quote(value);
     }
 
@@ -44,7 +44,7 @@ public class Json {
      * @param value the field's value
      * @return the pair, ready to join with others
      */
-    public static String field(String key, boolean value) {
+    public static String buildField(String key, boolean value) {
         return quote(key) + ": " + value;
     }
 }

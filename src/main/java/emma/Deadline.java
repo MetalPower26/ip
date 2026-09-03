@@ -38,7 +38,7 @@ public class Deadline extends Task {
     /** Adds the due date to the fields every task saves. */
     @Override
     public String toJson() {
-        return jsonObject(Json.field("by", by.toString()));
+        return buildJsonObject(Json.buildField("by", by.toString()));
     }
 
     /** Appends the due date to the standard rendering. */

@@ -65,12 +65,12 @@ public class Storage {
      * @throws EmmaException if the file cannot be written
      */
     public void save(TaskList tasks) throws EmmaException {
-        List<Task> all = tasks.getTasks();
+        List<Task> allTasks = tasks.getTasks();
         StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < all.size(); i++) {
-            json.append(i > 0 ? ",\n" : "\n").append(all.get(i).toJson());
+        for (int i = 0; i < allTasks.size(); i++) {
+            json.append(i > 0 ? ",\n" : "\n").append(allTasks.get(i).toJson());
         }
-        json.append(all.isEmpty() ? "]\n" : "\n]\n");
+        json.append(allTasks.isEmpty() ? "]\n" : "\n]\n");
         try {
             Path folder = file.getParent();
             if (folder != null) {
@@ -110,7 +110,7 @@ public class Storage {
             }
             skipWhitespace();
             if (pos < text.length()) {
-                throw error("there is extra text after the closing ']'");
+                throw buildError("there is extra text after the closing ']'");
             }
             return tasks;
         }
@@ -135,7 +135,7 @@ public class Storage {
             case "T" -> new Todo(description);
             case "D" -> new Deadline(description, readDate(fields, "by"));
             case "E" -> new Event(description, readDate(fields, "from"), readDate(fields, "to"));
-            default -> throw error("\"type\" must be \"T\", \"D\" or \"E\"");
+            default -> throw buildError("\"type\" must be \"T\", \"D\" or \"E\"");
             };
             task.setDone(isDone);
             return task;
@@ -144,7 +144,7 @@ public class Storage {
         private String require(Map<String, String> fields, String key) throws EmmaException {
             String value = fields.get(key);
             if (value == null) {
-                throw error("a task is missing its \"" + key + "\" field");
+                throw buildError("a task is missing its \"" + key + "\" field");
             }
             return value;
         }
@@ -155,7 +155,7 @@ public class Storage {
             try {
                 return LocalDate.parse(value);
             } catch (DateTimeParseException e) {
-                throw error("\"" + key + "\" must be a date like \"2019-10-15\", not \"" + value + "\"");
+                throw buildError("\"" + key + "\" must be a date like \"2019-10-15\", not \"" + value + "\"");
             }
         }
 
@@ -181,7 +181,7 @@ public class Storage {
                 default -> value.append(escaped);
                 }
             }
-            throw error("a piece of text is missing its closing quote");
+            throw buildError("a piece of text is missing its closing quote");
         }
 
         private boolean readBoolean() throws EmmaException {
@@ -194,7 +194,7 @@ public class Storage {
                 pos += "false".length();
                 return false;
             }
-            throw error("\"done\" must be true or false");
+            throw buildError("\"done\" must be true or false");
         }
 
         private void skipWhitespace() {
@@ -214,12 +214,12 @@ public class Storage {
 
         private void expect(char expected) throws EmmaException {
             if (!tryConsume(expected)) {
-                throw error("expected '" + expected + "'");
+                throw buildError("expected '" + expected + "'");
             }
         }
 
         /** Reports where in the file the problem is, so it can be fixed by hand. */
-        private EmmaException error(String problem) {
+        private EmmaException buildError(String problem) {
             int line = 1;
             for (int i = 0; i < pos && i < text.length(); i++) {
                 if (text.charAt(i) == '\n') {

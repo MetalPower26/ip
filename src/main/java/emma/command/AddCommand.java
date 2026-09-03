@@ -6,7 +6,7 @@ import emma.Task;
 import emma.TaskList;
 
 /**
- * The shared work of every command that appends a task into TaskList: 
+ * The shared work of every command that appends a task into TaskList:
  * store it, save it, and report it.
  * Subclasses only decide which task to build.
  */
