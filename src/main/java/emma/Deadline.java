@@ -12,8 +12,8 @@ public class Deadline extends Task {
     /**
      * Creates a deadline.
      *
-     * @param description what the user typed
-     * @param by the date the task is due
+     * @param description what the user typed.
+     * @param by the date the task is due.
      */
     public Deadline(String description, LocalDate by) {
         super(description);
@@ -28,8 +28,8 @@ public class Deadline extends Task {
     /**
      * Checks whether this deadline falls on or before a date.
      *
-     * @param date the latest date to allow
-     * @return true if this deadline is due no later than the date
+     * @param date the latest date to allow.
+     * @return true if this deadline is due no later than the date.
      */
     public boolean isDueBy(LocalDate date) {
         return !by.isAfter(date);

@@ -13,7 +13,7 @@ public class FindCommand implements Command {
     /**
      * Creates the command.
      *
-     * @param keyword the text to look for in each description
+     * @param keyword the text to look for in each description.
      */
     public FindCommand(String keyword) {
         this.keyword = keyword;

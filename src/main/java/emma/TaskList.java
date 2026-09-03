@@ -15,7 +15,7 @@ public class TaskList {
     /**
      * Creates a list holding the given tasks.
      *
-     * @param initialTasks the tasks to start with
+     * @param initialTasks the tasks to start with.
      */
     public TaskList(List<Task> initialTasks) {
         this.tasks.addAll(initialTasks);
@@ -24,7 +24,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task the task to store
+     * @param task the task to store.
      */
     public void add(Task task) {
         tasks.add(task);
@@ -33,8 +33,8 @@ public class TaskList {
     /**
      * Checks whether a task number refers to an existing task.
      *
-     * @param taskNumber the 1-based task number
-     * @return true if a task with that number exists
+     * @param taskNumber the 1-based task number.
+     * @return true if a task with that number exists.
      */
     private boolean isValidTaskNumber(int taskNumber) {
         return taskNumber >= 1 && taskNumber <= tasks.size();
@@ -43,8 +43,8 @@ public class TaskList {
     /**
      * Returns the numbered task.
      *
-     * @param taskNumber the 1-based task number
-     * @return the matching task
+     * @param taskNumber the 1-based task number.
+     * @return the matching task.
      * @throws IndexOutOfBoundsException if no task has that number
      */
     public Task get(int taskNumber) {
@@ -57,8 +57,8 @@ public class TaskList {
     /**
      * Puts a task back at a given position, so that a delete can be undone.
      *
-     * @param taskNumber the 1-based position to insert at
-     * @param task the task to put back
+     * @param taskNumber the 1-based position to insert at.
+     * @param task the task to put back.
      * @throws IndexOutOfBoundsException if the position is past one place after the end
      */
     public void insert(int taskNumber, Task task) {
@@ -71,7 +71,7 @@ public class TaskList {
     /**
      * Returns how many tasks are stored.
      *
-     * @return the number of tasks
+     * @return the number of tasks.
      */
     public int size() {
         return tasks.size();
@@ -80,9 +80,9 @@ public class TaskList {
     /**
      * Marks the numbered task as done or not done.
      *
-     * @param taskNumber the 1-based task number
-     * @param isDone true for "mark", false for "unmark"
-     * @return the task that was changed
+     * @param taskNumber the 1-based task number.
+     * @param isDone true for "mark", false for "unmark".
+     * @return the task that was changed.
      * @throws IndexOutOfBoundsException if no task has that number
      */
     public Task applyMark(int taskNumber, boolean isDone) {
@@ -94,8 +94,8 @@ public class TaskList {
     /**
      * Removes the task from the list.
      *
-     * @param taskNumber the 1-based task number
-     * @return the task that was removed
+     * @param taskNumber the 1-based task number.
+     * @return the task that was removed.
      * @throws IndexOutOfBoundsException if no task has that number
      */
     public Task delete(int taskNumber) {
@@ -109,7 +109,7 @@ public class TaskList {
      * Returns the tasks in order, for saving. The list cannot be modified
      * through this view; use add, applyMark and delete instead.
      *
-     * @return a read-only view of the stored tasks
+     * @return a read-only view of the stored tasks.
      */
     public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
@@ -118,7 +118,7 @@ public class TaskList {
     /**
      * Checks whether any tasks are stored.
      *
-     * @return true if there are no tasks
+     * @return true if there are no tasks.
      */
     public boolean isEmpty() {
         return tasks.isEmpty();
@@ -127,7 +127,7 @@ public class TaskList {
     /**
      * Builds a 1-based numbered list of every task, one per line.
      *
-     * @return the tasks, one per line; empty if there are none
+     * @return the tasks, one per line; empty if there are none.
      */
     public String format() {
         return format(task -> true);
@@ -137,8 +137,8 @@ public class TaskList {
      * Builds a numbered list of the matching tasks, keeping each task's number from
      * the full list so that it can still be marked or deleted by that number.
      *
-     * @param matches the test a task must pass to be listed
-     * @return the matching tasks, one per line; empty if none match
+     * @param matches the test a task must pass to be listed.
+     * @return the matching tasks, one per line; empty if none match.
      */
     public String format(Predicate<Task> matches) {
         StringBuilder list = new StringBuilder();

@@ -17,9 +17,9 @@ public class AddEventCommand extends AddCommand {
     /**
      * Creates the command.
      *
-     * @param description what the event is
-     * @param from the date the event starts
-     * @param to the date the event ends
+     * @param description what the event is.
+     * @param from the date the event starts.
+     * @param to the date the event ends.
      */
     public AddEventCommand(String description, LocalDate from, LocalDate to) {
         this.description = description;

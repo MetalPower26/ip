@@ -16,8 +16,8 @@ public class MarkCommand implements Command {
     /**
      * Creates the command.
      *
-     * @param taskNumber the 1-based task number the user gave
-     * @param isDone true for "mark", false for "unmark"
+     * @param taskNumber the 1-based task number the user gave.
+     * @param isDone true for "mark", false for "unmark".
      */
     public MarkCommand(int taskNumber, boolean isDone) {
         this.taskNumber = taskNumber;

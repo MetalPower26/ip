@@ -24,8 +24,8 @@ public class Parser {
     /**
      * Reads one line of input.
      *
-     * @param input the line the user typed
-     * @return the command that line asks for
+     * @param input the line the user typed.
+     * @return the command that line asks for.
      * @throws EmmaException if the line names no command Emma knows, or its arguments are wrong
      */
     public static Command parse(String input) throws EmmaException {
@@ -50,8 +50,8 @@ public class Parser {
     /**
      * Reads a "todo" command.
      *
-     * @param arguments the arguments after the command word
-     * @return the command
+     * @param arguments the arguments after the command word.
+     * @return the command.
      * @throws EmmaException if the description is missing
      */
     private static Command parseTodo(String arguments) throws EmmaException {
@@ -65,8 +65,8 @@ public class Parser {
     /**
      * Reads a "find" command.
      *
-     * @param arguments the arguments after the command word
-     * @return the command
+     * @param arguments the arguments after the command word.
+     * @return the command.
      * @throws EmmaException if there is nothing to look for
      */
     private static Command parseFind(String arguments) throws EmmaException {
@@ -80,8 +80,8 @@ public class Parser {
     /**
      * Reads a "deadline" command.
      *
-     * @param arguments the arguments after the command word
-     * @return the command
+     * @param arguments the arguments after the command word.
+     * @return the command.
      * @throws EmmaException if the description or the date is missing, or is not a real date
      */
     private static Command parseDeadline(String arguments) throws EmmaException {
@@ -98,8 +98,8 @@ public class Parser {
     /**
      * Reads an "event" command.
      *
-     * @param arguments the arguments after the command word
-     * @return the command
+     * @param arguments the arguments after the command word.
+     * @return the command.
      * @throws EmmaException if a part is missing, is not a real date, or the event ends
      *     before it starts
      */
@@ -126,8 +126,8 @@ public class Parser {
     /**
      * Reads a "filter" command, working out the test its results must pass.
      *
-     * @param arguments the arguments after the command word
-     * @return the command
+     * @param arguments the arguments after the command word.
+     * @return the command.
      * @throws EmmaException if the type is missing or unknown, or an option does not
      *     belong to that type or is not followed by a real date
      */
@@ -170,9 +170,9 @@ public class Parser {
     /**
      * Reads the task number that a command like "mark 2" or "delete 2" was given.
      *
-     * @param arguments the arguments after the command word
-     * @param command the command word, used to word the error message
-     * @return the number the user typed, not yet checked against the list
+     * @param arguments the arguments after the command word.
+     * @param command the command word, used to word the error message.
+     * @return the number the user typed, not yet checked against the list.
      * @throws EmmaException if the argument is not a whole number
      */
     private static int parseTaskNumber(String arguments, String command) throws EmmaException {
@@ -186,9 +186,9 @@ public class Parser {
     /**
      * Reads a date written as yyyy-mm-dd, rejecting anything that is not a real date.
      *
-     * @param text the date the user typed
-     * @param field the part of the command it came from, used to word the error message
-     * @return the date the user typed
+     * @param text the date the user typed.
+     * @param field the part of the command it came from, used to word the error message.
+     * @return the date the user typed.
      * @throws EmmaException if the text is not a real date in yyyy-mm-dd form
      */
     private static LocalDate parseDate(String text, String field) throws EmmaException {

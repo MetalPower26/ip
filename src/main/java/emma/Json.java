@@ -9,8 +9,8 @@ public class Json {
     /**
      * Wraps text in quotes, escaping the characters JSON does not allow raw.
      *
-     * @param value the text to quote
-     * @return the text as a JSON string
+     * @param value the text to quote.
+     * @return the text as a JSON string.
      */
     public static String quote(String value) {
         StringBuilder quoted = new StringBuilder("\"");
@@ -29,9 +29,9 @@ public class Json {
     /**
      * Builds one `"key": "value"` pair.
      *
-     * @param key the field name
-     * @param value the field's text
-     * @return the pair, ready to join with others
+     * @param key the field name.
+     * @param value the field's text.
+     * @return the pair, ready to join with others.
      */
     public static String buildField(String key, String value) {
         return quote(key) + ": " + quote(value);
@@ -40,9 +40,9 @@ public class Json {
     /**
      * Builds one `"key": true` or `"key": false` pair.
      *
-     * @param key the field name
-     * @param value the field's value
-     * @return the pair, ready to join with others
+     * @param key the field name.
+     * @param value the field's value.
+     * @return the pair, ready to join with others.
      */
     public static String buildField(String key, boolean value) {
         return quote(key) + ": " + value;

@@ -15,7 +15,7 @@ public abstract class AddCommand implements Command {
     /**
      * Builds the task this command adds.
      *
-     * @return the new task
+     * @return the new task.
      */
     protected abstract Task createTask();
 

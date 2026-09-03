@@ -13,7 +13,7 @@ public class AddTodoCommand extends AddCommand {
     /**
      * Creates the command.
      *
-     * @param description what the task is
+     * @param description what the task is.
      */
     public AddTodoCommand(String description) {
         this.description = description;

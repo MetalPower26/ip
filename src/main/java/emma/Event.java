@@ -13,9 +13,9 @@ public class Event extends Task {
     /**
      * Creates an event.
      *
-     * @param description task description
-     * @param from the date the event starts
-     * @param to the date the event ends
+     * @param description task description.
+     * @param from the date the event starts.
+     * @param to the date the event ends.
      */
     public Event(String description, LocalDate from, LocalDate to) {
         super(description);
@@ -31,8 +31,8 @@ public class Event extends Task {
     /**
      * Checks whether this event is running on a date, counting the first and last days.
      *
-     * @param date the date to check
-     * @return true if the date falls between the start and the end
+     * @param date the date to check.
+     * @return true if the date falls between the start and the end.
      */
     public boolean isOn(LocalDate date) {
         return !from.isAfter(date) && !to.isBefore(date);

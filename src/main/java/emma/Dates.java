@@ -16,8 +16,8 @@ public class Dates {
     /**
      * Renders a date with its month in words, as in "Oct 15 2019".
      *
-     * @param date the date to render
-     * @return the date as Emma shows it
+     * @param date the date to render.
+     * @return the date as Emma shows it.
      */
     public static String format(LocalDate date) {
         return date.format(DISPLAY);

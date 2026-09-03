@@ -9,7 +9,7 @@ public class EmmaException extends Exception {
     /**
      * Creates an exception whose message is shown to the user as-is.
      *
-     * @param message what Emma should say about the problem
+     * @param message what Emma should say about the problem.
      */
     public EmmaException(String message) {
         super(message);

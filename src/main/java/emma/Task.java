@@ -15,7 +15,7 @@ public abstract class Task {
     /**
      * Creates a task that starts out not done.
      *
-     * @param description what the user typed
+     * @param description what the user typed.
      */
     public Task(String description) {
         this.description = description;
@@ -25,7 +25,7 @@ public abstract class Task {
     /**
      * Marks this task as done or not done.
      *
-     * @param isDone true to mark done, false to mark not done
+     * @param isDone true to mark done, false to mark not done.
      */
     public void setDone(boolean isDone) {
         this.isDone = isDone;
@@ -34,7 +34,7 @@ public abstract class Task {
     /**
      * Checks whether this task has been marked done.
      *
-     * @return true if the task is done
+     * @return true if the task is done.
      */
     public boolean isDone() {
         return isDone;
@@ -43,8 +43,8 @@ public abstract class Task {
     /**
      * Checks whether some text appears in this task's description.
      *
-     * @param text the text to look for, matched exactly as given
-     * @return true if the description contains that text
+     * @param text the text to look for, matched exactly as given.
+     * @return true if the description contains that text.
      */
     public boolean hasDescriptionContaining(String text) {
         return description.contains(text);
@@ -53,7 +53,7 @@ public abstract class Task {
     /**
      * Returns the type icon shown in the first bracket.
      *
-     * @return task type icon
+     * @return task type icon.
      */
     protected abstract String getTypeIcon();
 
@@ -62,8 +62,8 @@ public abstract class Task {
      * any the subclass passes in. Commas and indenting are handled here, so
      * subclasses never deal with separators.
      *
-     * @param extraFields field pairs built with {@link Json#buildField}
-     * @return this task as an indented JSON object
+     * @param extraFields field pairs built with {@link Json#buildField}.
+     * @return this task as an indented JSON object.
      */
     protected String buildJsonObject(String... extraFields) {
         List<String> fields = new ArrayList<>();
@@ -78,7 +78,7 @@ public abstract class Task {
      * Renders the task as an indented JSON object holding the fields needed to
      * rebuild it. Subclasses with timing of their own override this.
      *
-     * @return this task as JSON
+     * @return this task as JSON.
      */
     public String toJson() {
         return buildJsonObject();

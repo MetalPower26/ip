@@ -33,7 +33,7 @@ public class Storage {
     /**
      * Creates storage backed by a file.
      *
-     * @param filePath where the tasks are kept, as in "data/emma.json"
+     * @param filePath where the tasks are kept, as in "data/emma.json".
      */
     public Storage(String filePath) {
         this.file = Path.of(filePath);
@@ -42,7 +42,7 @@ public class Storage {
     /**
      * Reads the saved tasks, or returns an empty list if nothing is saved yet.
      *
-     * @return the tasks that were on disk
+     * @return the tasks that were on disk.
      * @throws EmmaException if the file exists but cannot be read or understood
      */
     public List<Task> load() throws EmmaException {
@@ -61,7 +61,7 @@ public class Storage {
     /**
      * Writes the whole task list out, creating the data folder if needed.
      *
-     * @param tasks the tasks to save
+     * @param tasks the tasks to save.
      * @throws EmmaException if the file cannot be written
      */
     public void save(TaskList tasks) throws EmmaException {

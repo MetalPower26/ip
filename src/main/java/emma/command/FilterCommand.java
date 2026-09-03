@@ -16,7 +16,7 @@ public class FilterCommand implements Command {
     /**
      * Creates the command.
      *
-     * @param matches the test a task must pass to be shown
+     * @param matches the test a task must pass to be shown.
      */
     public FilterCommand(Predicate<Task> matches) {
         this.matches = matches;

@@ -18,7 +18,7 @@ public class Emma {
     /**
      * Creates a chatbot that keeps its tasks in the given file.
      *
-     * @param filePath where the tasks are saved between runs
+     * @param filePath where the tasks are saved between runs.
      */
     public Emma(String filePath) {
         this.ui = new Ui();
@@ -60,7 +60,7 @@ public class Emma {
     /**
      * Starts Emma with the usual save file.
      *
-     * @param args empty
+     * @param args empty.
      */
     public static void main(String[] args) {
         new Emma(DEFAULT_SAVE_PATH).run();

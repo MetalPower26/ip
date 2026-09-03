@@ -31,7 +31,7 @@ public class Ui {
     /**
      * Prints one response under Emma's name.
      *
-     * @param response what Emma has to say
+     * @param response what Emma has to say.
      */
     public void showResponse(String response) {
         System.out.println();
@@ -42,7 +42,7 @@ public class Ui {
     /**
      * Prompts under the user's name and reads the line they type.
      *
-     * @return the line typed, or null once there is no more input
+     * @return the line typed, or null once there is no more input.
      */
     public String readCommand() {
         System.out.println();
