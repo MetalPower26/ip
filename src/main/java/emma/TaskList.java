@@ -124,7 +124,11 @@ public class TaskList {
         return tasks.isEmpty();
     }
 
-    /** Builds a 1-based numbered list of the tasks, one per line; empty if there are none. */
+    /**
+     * Builds a 1-based numbered list of every task, one per line.
+     *
+     * @return the tasks, one per line; empty if there are none
+     */
     public String format() {
         return format(task -> true);
     }

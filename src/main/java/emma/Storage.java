@@ -99,6 +99,7 @@ public class Storage {
             this.pos = 0;
         }
 
+        /** Reads the whole array, and refuses anything left over after it. */
         private List<Task> readTasks() throws EmmaException {
             List<Task> tasks = new ArrayList<>();
             expect('[');
@@ -115,6 +116,7 @@ public class Storage {
             return tasks;
         }
 
+        /** Reads one object and builds the task type its "type" field names. */
         private Task readTask() throws EmmaException {
             expect('{');
             Map<String, String> fields = new HashMap<>();
@@ -141,6 +143,7 @@ public class Storage {
             return task;
         }
 
+        /** Returns a field the task cannot be rebuilt without, or reports it missing. */
         private String require(Map<String, String> fields, String key) throws EmmaException {
             String value = fields.get(key);
             if (value == null) {
@@ -159,6 +162,7 @@ public class Storage {
             }
         }
 
+        /** Reads a quoted string, turning the escapes back into the characters they stand for. */
         private String readString() throws EmmaException {
             expect('"');
             StringBuilder value = new StringBuilder();
@@ -184,6 +188,7 @@ public class Storage {
             throw error("a piece of text is missing its closing quote");
         }
 
+        /** Reads the word true or false. */
         private boolean readBoolean() throws EmmaException {
             skipWhitespace();
             if (text.startsWith("true", pos)) {
@@ -203,6 +208,7 @@ public class Storage {
             }
         }
 
+        /** Steps past the character if it is next, after any whitespace; false if it is not. */
         private boolean tryConsume(char expected) {
             skipWhitespace();
             if (pos < text.length() && text.charAt(pos) == expected) {
@@ -212,6 +218,7 @@ public class Storage {
             return false;
         }
 
+        /** Steps past a character the format requires, or reports where it was missing. */
         private void expect(char expected) throws EmmaException {
             if (!tryConsume(expected)) {
                 throw error("expected '" + expected + "'");
