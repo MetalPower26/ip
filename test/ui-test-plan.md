@@ -559,3 +559,49 @@ Here's what matches:
 2. [D][ ] return book (by: Oct 15 2019)
 Bye for now! Hope to see you again soon.
 ```
+
+---
+
+## TC18: Finding tasks by their description
+
+**Aim:** `find` shows every task whose description contains the text, of any type,
+keeping their numbers from the full list; it ignores the dates and type icons, and
+says so when nothing matches or when no text was given.
+
+**Input**
+
+```
+todo read book
+deadline return book /by 2019-10-15
+event book club /from 2019-10-15 /to 2019-10-16
+todo buy milk
+find book
+find milk
+find Oct
+find homework
+find
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [T][ ] read book
+Got it, I've added this:
+  [D][ ] return book (by: Oct 15 2019)
+Got it, I've added this:
+  [E][ ] book club (from: Oct 15 2019 to: Oct 16 2019)
+Got it, I've added this:
+  [T][ ] buy milk
+Here's what I found:
+1. [T][ ] read book
+2. [D][ ] return book (by: Oct 15 2019)
+3. [E][ ] book club (from: Oct 15 2019 to: Oct 16 2019)
+Here's what I found:
+4. [T][ ] buy milk
+Nothing has "Oct" in its description.
+Nothing has "homework" in its description.
+A find needs something to look for, like "find book".
+Bye for now! Hope to see you again soon.
+```

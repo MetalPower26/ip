@@ -95,6 +95,7 @@ VS Code is configured to use JDK 25 (`Java: Configure Java Runtime`).
 | `filter /type TYPE` | Shows only `todo`, `deadline` or `event` tasks | `filter /type deadline` |
 | `filter /type deadline /due-by DATE` | Shows deadlines due on or before a date | `filter /type deadline /due-by 2019-10-15` |
 | `filter /type event /at DATE` | Shows events running on a date | `filter /type event /at 2019-10-15` |
+| `find TEXT` | Shows tasks with that text in their description | `find book` |
 | `bye` | Exits | `bye` |
 
 Tasks are shown as `[TYPE][STATUS] description`, where the type is `T`, `D` or
