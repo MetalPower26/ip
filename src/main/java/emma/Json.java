@@ -16,11 +16,11 @@ public class Json {
         StringBuilder quoted = new StringBuilder("\"");
         for (char c : value.toCharArray()) {
             switch (c) {
-            case '"' -> quoted.append("\\\"");
-            case '\\' -> quoted.append("\\\\");
-            case '\n' -> quoted.append("\\n");
-            case '\t' -> quoted.append("\\t");
-            default -> quoted.append(c);
+                case '"' -> quoted.append("\\\"");
+                case '\\' -> quoted.append("\\\\");
+                case '\n' -> quoted.append("\\n");
+                case '\t' -> quoted.append("\\t");
+                default -> quoted.append(c);
             }
         }
         return quoted.append('"').toString();

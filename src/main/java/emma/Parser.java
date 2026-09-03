@@ -33,17 +33,17 @@ public class Parser {
         String command = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
         return switch (command) {
-        case "bye" -> new ByeCommand();
-        case "list" -> new ListCommand();
-        case "mark" -> new MarkCommand(parseTaskNumber(arguments, "mark"), true);
-        case "unmark" -> new MarkCommand(parseTaskNumber(arguments, "unmark"), false);
-        case "delete" -> new DeleteCommand(parseTaskNumber(arguments, "delete"));
-        case "todo" -> parseTodo(arguments);
-        case "deadline" -> parseDeadline(arguments);
-        case "event" -> parseEvent(arguments);
-        case "filter" -> parseFilter(arguments);
-        case "find" -> parseFind(arguments);
-        default -> throw new EmmaException("Sorry, I don't know what that means!");
+            case "bye" -> new ByeCommand();
+            case "list" -> new ListCommand();
+            case "mark" -> new MarkCommand(parseTaskNumber(arguments, "mark"), true);
+            case "unmark" -> new MarkCommand(parseTaskNumber(arguments, "unmark"), false);
+            case "delete" -> new DeleteCommand(parseTaskNumber(arguments, "delete"));
+            case "todo" -> parseTodo(arguments);
+            case "deadline" -> parseDeadline(arguments);
+            case "event" -> parseEvent(arguments);
+            case "filter" -> parseFilter(arguments);
+            case "find" -> parseFind(arguments);
+            default -> throw new EmmaException("Sorry, I don't know what that means!");
         };
     }
 
@@ -140,10 +140,10 @@ public class Parser {
         String[] parts = trimmed.substring("/type ".length()).trim().split(" ", 2);
         String type = parts[0];
         Predicate<Task> matches = switch (type) {
-        case "todo" -> task -> task instanceof Todo;
-        case "deadline" -> task -> task instanceof Deadline;
-        case "event" -> task -> task instanceof Event;
-        default -> throw new EmmaException("I can only filter by todo, deadline or event.");
+            case "todo" -> task -> task instanceof Todo;
+            case "deadline" -> task -> task instanceof Deadline;
+            case "event" -> task -> task instanceof Event;
+            default -> throw new EmmaException("I can only filter by todo, deadline or event.");
         };
 
         String option = parts.length > 1 ? parts[1].trim() : "";

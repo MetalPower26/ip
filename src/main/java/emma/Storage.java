@@ -134,10 +134,10 @@ public class Storage {
 
             String description = require(fields, "description");
             Task task = switch (require(fields, "type")) {
-            case "T" -> new Todo(description);
-            case "D" -> new Deadline(description, readDate(fields, "by"));
-            case "E" -> new Event(description, readDate(fields, "from"), readDate(fields, "to"));
-            default -> throw buildError("\"type\" must be \"T\", \"D\" or \"E\"");
+                case "T" -> new Todo(description);
+                case "D" -> new Deadline(description, readDate(fields, "by"));
+                case "E" -> new Event(description, readDate(fields, "from"), readDate(fields, "to"));
+                default -> throw buildError("\"type\" must be \"T\", \"D\" or \"E\"");
             };
             task.setDone(isDone);
             return task;
@@ -180,9 +180,9 @@ public class Storage {
                 }
                 char escaped = text.charAt(pos++);
                 switch (escaped) {
-                case 'n' -> value.append('\n');
-                case 't' -> value.append('\t');
-                default -> value.append(escaped);
+                    case 'n' -> value.append('\n');
+                    case 't' -> value.append('\t');
+                    default -> value.append(escaped);
                 }
             }
             throw buildError("a piece of text is missing its closing quote");
