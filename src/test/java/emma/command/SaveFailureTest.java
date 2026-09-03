@@ -55,8 +55,8 @@ public class SaveFailureTest {
         TaskList tasks = twoTasks();
         String before = tasks.format();
 
-        assertThrows(EmmaException.class,
-                () -> new AddTodoCommand("third").execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new AddTodoCommand("third").execute(tasks, blockedStorage));
 
         assertEquals(before, tasks.format());
         assertEquals(2, tasks.size());
@@ -66,8 +66,8 @@ public class SaveFailureTest {
     public void execute_addToAnEmptyListCannotSave_theListStaysEmpty() {
         TaskList tasks = new TaskList(List.of());
 
-        assertThrows(EmmaException.class,
-                () -> new AddTodoCommand("read book").execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new AddTodoCommand("read book").execute(tasks, blockedStorage));
 
         assertTrue(tasks.isEmpty());
     }
@@ -77,8 +77,8 @@ public class SaveFailureTest {
         TaskList tasks = twoTasks();
         String before = tasks.format();
 
-        assertThrows(EmmaException.class,
-                () -> new DeleteCommand(1).execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new DeleteCommand(1).execute(tasks, blockedStorage));
 
         assertEquals(before, tasks.format());
         assertEquals(2, tasks.size());
@@ -88,8 +88,8 @@ public class SaveFailureTest {
     public void execute_markCannotSave_theTaskStaysNotDone() {
         TaskList tasks = twoTasks();
 
-        assertThrows(EmmaException.class,
-                () -> new MarkCommand(1, true).execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new MarkCommand(1, true).execute(tasks, blockedStorage));
 
         assertFalse(tasks.get(1).isDone());
     }
@@ -99,8 +99,8 @@ public class SaveFailureTest {
         TaskList tasks = twoTasks();
         tasks.applyMark(1, true);
 
-        assertThrows(EmmaException.class,
-                () -> new MarkCommand(1, false).execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new MarkCommand(1, false).execute(tasks, blockedStorage));
 
         assertTrue(tasks.get(1).isDone());
     }
@@ -110,12 +110,12 @@ public class SaveFailureTest {
         TaskList tasks = twoTasks();
         String before = tasks.format();
 
-        assertThrows(EmmaException.class,
-                () -> new AddTodoCommand("third").execute(tasks, blockedStorage));
-        assertThrows(EmmaException.class,
-                () -> new DeleteCommand(2).execute(tasks, blockedStorage));
-        assertThrows(EmmaException.class,
-                () -> new MarkCommand(2, true).execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new AddTodoCommand("third").execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new DeleteCommand(2).execute(tasks, blockedStorage));
+        assertThrows(EmmaException.class, () ->
+                new MarkCommand(2, true).execute(tasks, blockedStorage));
 
         assertEquals(before, tasks.format());
     }

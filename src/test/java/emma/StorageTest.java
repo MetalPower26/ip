@@ -92,8 +92,8 @@ public class StorageTest {
         Files.writeString(blocker, "a file where the folder should be");
         Storage storage = new Storage(blocker.resolve("emma.json").toString());
 
-        String message = assertThrows(EmmaException.class,
-                () -> storage.save(new TaskList(List.of(new Todo("read book"))))).getMessage();
+        String message = assertThrows(EmmaException.class, () ->
+                storage.save(new TaskList(List.of(new Todo("read book"))))).getMessage();
         assertTrue(message.startsWith("I couldn't save to"), message);
     }
 }

@@ -76,14 +76,14 @@ public class MarkCommandTest {
         TaskList tasks = twoTodos();
         Storage storage = storage();
         assertEquals("You don't have a task numbered 3.",
-                assertThrows(EmmaException.class,
-                        () -> new MarkCommand(3, true).execute(tasks, storage)).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        new MarkCommand(3, true).execute(tasks, storage)).getMessage());
         assertEquals("You don't have a task numbered 0.",
-                assertThrows(EmmaException.class,
-                        () -> new MarkCommand(0, true).execute(tasks, storage)).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        new MarkCommand(0, true).execute(tasks, storage)).getMessage());
         assertEquals("You don't have a task numbered -1.",
-                assertThrows(EmmaException.class,
-                        () -> new MarkCommand(-1, false).execute(tasks, storage)).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        new MarkCommand(-1, false).execute(tasks, storage)).getMessage());
     }
 
     @Test

@@ -16,7 +16,6 @@ import emma.command.AddDeadlineCommand;
 import emma.command.AddEventCommand;
 import emma.command.AddTodoCommand;
 import emma.command.ByeCommand;
-import emma.command.Command;
 import emma.command.DeleteCommand;
 import emma.command.FilterCommand;
 import emma.command.FindCommand;
@@ -118,19 +117,19 @@ public class ParserTest {
     @Test
     public void parse_dateThatIsNotARealDate_isRejected() {
         assertEquals("I need a due date as a date like 2019-10-15, but I got \"Sunday\".",
-                assertThrows(EmmaException.class,
-                        () -> Parser.parse("deadline return book /by Sunday")).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        Parser.parse("deadline return book /by Sunday")).getMessage());
         assertEquals("I need a due date as a date like 2019-10-15, but I got \"2019-02-30\".",
-                assertThrows(EmmaException.class,
-                        () -> Parser.parse("deadline return book /by 2019-02-30")).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        Parser.parse("deadline return book /by 2019-02-30")).getMessage());
     }
 
     @Test
     public void parse_eventEndingBeforeItStarts_isRejected() {
         assertEquals("An event has to end on or after it starts, "
                         + "but Oct 15 2019 is before Oct 16 2019.",
-                assertThrows(EmmaException.class,
-                        () -> Parser.parse("event meeting /from 2019-10-16 /to 2019-10-15"))
+                assertThrows(EmmaException.class, () ->
+                        Parser.parse("event meeting /from 2019-10-16 /to 2019-10-15"))
                         .getMessage());
     }
 

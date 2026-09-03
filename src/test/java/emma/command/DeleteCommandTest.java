@@ -65,11 +65,11 @@ public class DeleteCommandTest {
         TaskList tasks = threeTasks();
         Storage storage = storage();
         assertEquals("You don't have a task numbered 4.",
-                assertThrows(EmmaException.class,
-                        () -> new DeleteCommand(4).execute(tasks, storage)).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        new DeleteCommand(4).execute(tasks, storage)).getMessage());
         assertEquals("You don't have a task numbered 0.",
-                assertThrows(EmmaException.class,
-                        () -> new DeleteCommand(0).execute(tasks, storage)).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        new DeleteCommand(0).execute(tasks, storage)).getMessage());
     }
 
     @Test
@@ -77,8 +77,8 @@ public class DeleteCommandTest {
         TaskList tasks = new TaskList(List.of());
         Storage storage = storage();
         assertEquals("You don't have a task numbered 1.",
-                assertThrows(EmmaException.class,
-                        () -> new DeleteCommand(1).execute(tasks, storage)).getMessage());
+                assertThrows(EmmaException.class, () ->
+                        new DeleteCommand(1).execute(tasks, storage)).getMessage());
     }
 
     @Test
