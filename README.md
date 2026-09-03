@@ -27,19 +27,53 @@ Got it, I've added this:
 - **JDK 25.** The code uses switch expressions with `->` arms, so an older JDK
   will not compile it.
 
-## Running Emma
+## Building and running
 
-The project has no build tool yet, so compile and run it with the JDK directly.
-From the project root:
+The project is built with Gradle, through the wrapper committed here, so nothing
+needs installing beyond the JDK. Use `./gradlew` in Git Bash or `.\gradlew.bat`
+in PowerShell. The first command downloads Gradle itself and takes a minute;
+later ones are quick.
+
+```
+./gradlew run --console=plain -q
+```
+
+`--console=plain` keeps Gradle's progress bar from fighting Emma for the
+terminal, and `-q` hides the task list, so you see only the conversation.
+
+```
+./gradlew build     compile, run the tests, and package the JAR
+./gradlew test      run the tests only
+./gradlew clean     delete build/ and start fresh
+```
+
+## Building a JAR
+
+`shadowJar` packages Emma and everything it needs into one runnable file:
+
+```
+./gradlew shadowJar
+```
+
+The JAR lands at **`build/libs/emma.jar`**. Run it from anywhere with:
+
+```
+java -jar build/libs/emma.jar
+```
+
+It is a *fat* JAR, so that single file is all another machine needs — no
+classpath, no project folder, just a JDK 25 runtime. Emma saves to `data/emma.json`
+**relative to the folder you run it from**, so running the JAR elsewhere gives it
+its own separate task list.
+
+### Without Gradle
+
+The JDK alone still works if you want it:
 
 ```
 javac -d out src/main/java/emma/*.java src/main/java/emma/command/*.java
 java -cp out emma.Emma
 ```
-
-`javac -d out` puts the compiled `.class` files in an `out/` folder (which is
-git-ignored) instead of mixing them in with the source, and `java -cp out` tells
-Java to look there for the `emma.Emma` class to start.
 
 ### In VS Code
 
