@@ -35,16 +35,26 @@ in PowerShell. The first command downloads Gradle itself and takes a minute;
 later ones are quick.
 
 ```
-./gradlew run --console=plain -q
+./gradlew run
 ```
 
-`--console=plain` keeps Gradle's progress bar from fighting Emma for the
-terminal, and `-q` hides the task list, so you see only the conversation.
+That opens Emma's window: the conversation scrolls above a text box, and you send
+a command with the **Send** button or by pressing Enter. Saying `bye` closes it.
 
 ```
-./gradlew build     compile, run the tests, and package the JAR
+./gradlew build     compile, check the style, run the tests, and package the JAR
 ./gradlew test      run the tests only
 ./gradlew clean     delete build/ and start fresh
+```
+
+### The console version
+
+Emma still runs as a plain terminal conversation, which is what the UI tests
+drive. It needs no JavaFX, so plain `javac` is enough:
+
+```
+javac -d out src/main/java/emma/*.java src/main/java/emma/command/*.java
+java -cp out emma.Emma
 ```
 
 ## Building a JAR
@@ -55,31 +65,23 @@ terminal, and `-q` hides the task list, so you see only the conversation.
 ./gradlew shadowJar
 ```
 
-The JAR lands at **`build/libs/emma.jar`**. Run it from anywhere with:
+The JAR lands at **`build/libs/emma.jar`** and opens the window when run:
 
 ```
 java -jar build/libs/emma.jar
 ```
 
-It is a *fat* JAR, so that single file is all another machine needs — no
-classpath, no project folder, just a JDK 25 runtime. Emma saves to `data/emma.json`
-**relative to the folder you run it from**, so running the JAR elsewhere gives it
-its own separate task list.
-
-### Without Gradle
-
-The JDK alone still works if you want it:
-
-```
-javac -d out src/main/java/emma/*.java src/main/java/emma/command/*.java
-java -cp out emma.Emma
-```
+It is a *fat* JAR — JavaFX included — so that one file is all another machine
+needs beyond a JDK 25 runtime. Emma saves to `data/emma.json` **relative to the
+folder you run it from**, so running the JAR elsewhere gives it its own task list.
 
 ### In VS Code
 
 With the Extension Pack for Java installed, open the project folder and use the
-**Run** code lens above `main` in [Emma.java](src/main/java/emma/Emma.java). Make sure
-VS Code is configured to use JDK 25 (`Java: Configure Java Runtime`).
+**Run** code lens above `main` in
+[Launcher.java](src/main/java/emma/gui/Launcher.java) for the window, or in
+[Emma.java](src/main/java/emma/Emma.java) for the console version. Make sure VS Code
+is configured to use JDK 25 (`Java: Configure Java Runtime`).
 
 ## Commands
 
@@ -133,6 +135,7 @@ All source lives in [src/main/java/](src/main/java/), split into two packages.
 |---|---|
 | `Emma.java` | Wires up the parts and runs the conversation |
 | `Ui.java` | Everything printed to and read from the console |
+| `gui/Launcher.java`, `gui/Main.java`, `gui/MainWindow.java`, `gui/DialogBox.java` | The JavaFX window and its chat bubbles |
 | `Parser.java` | Turns a typed line into the command it asks for |
 | `Task.java` | The shared behaviour of a task: description, done status, rendering |
 | `Todo.java`, `Deadline.java`, `Event.java` | The three task types and their extra dates |

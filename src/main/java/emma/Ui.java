@@ -22,6 +22,15 @@ public class Ui {
 
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Returns Emma's opening line, so that another front end can greet the user the same way.
+     *
+     * @return the greeting.
+     */
+    public static String getGreeting() {
+        return GREETING;
+    }
+
     /** Prints the banner and Emma's opening line. */
     public void showWelcome() {
         System.out.println(BANNER);

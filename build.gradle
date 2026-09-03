@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'com.gradleup.shadow' version '9.5.1'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 java {
@@ -21,6 +22,11 @@ dependencies {
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
+}
+
+javafx {
+    version = '25'
+    modules = ['javafx.controls']
 }
 
 checkstyle {
@@ -44,7 +50,10 @@ test {
 }
 
 application {
-    mainClass = 'emma.Emma'
+    // The window is the product now; the console version is still there as emma.Emma.
+    mainClass = 'emma.gui.Launcher'
+    // JavaFX loads native libraries; without this Java 25 prints a restricted-method warning.
+    applicationDefaultJvmArgs = ['--enable-native-access=javafx.graphics']
 }
 
 jar {

@@ -14,6 +14,7 @@ public class Emma {
     private final Ui ui;
     private final Storage storage;
     private TaskList tasks;
+    private boolean isExit = false;
 
     /**
      * Creates a chatbot that keeps its tasks in the given file.
@@ -29,32 +30,61 @@ public class Emma {
     /** Greets the user, then answers commands until "bye" or the end of the input. */
     public void run() {
         ui.showWelcome();
-        loadTasks();
+        String loadMessage = loadTasks();
+        if (!loadMessage.isEmpty()) {
+            ui.showResponse(loadMessage);
+        }
         while (true) {
             String input = ui.readCommand();
             if (input == null) {
                 break;
             }
-            try {
-                Command command = Parser.parse(input);
-                ui.showResponse(command.execute(tasks, storage));
-                if (command.isExit()) {
-                    break;
-                }
-            } catch (EmmaException e) {
-                ui.showResponse(e.getMessage());
+            ui.showResponse(getResponse(input));
+            if (isExit) {
+                break;
             }
         }
         ui.close();
     }
 
-    /** Replaces the empty starting list with the saved tasks, if they can be read. */
-    private void loadTasks() {
+    /**
+     * Replaces the empty starting list with the saved tasks, if they can be read.
+     *
+     * @return an empty string, or what to tell the user when the saved tasks cannot be read.
+     */
+    public String loadTasks() {
         try {
             tasks = new TaskList(storage.load());
+            return "";
         } catch (EmmaException e) {
-            ui.showResponse(e.getMessage() + "\nI'll start with an empty list.");
+            return e.getMessage() + "\nI'll start with an empty list.";
         }
+    }
+
+    /**
+     * Works out Emma's reply to one line of input, without printing anything.
+     *
+     * @param input the line the user typed.
+     * @return what Emma has to say about it, including any complaint about the command.
+     */
+    public String getResponse(String input) {
+        try {
+            Command command = Parser.parse(input);
+            String response = command.execute(tasks, storage);
+            isExit = command.isExit();
+            return response;
+        } catch (EmmaException e) {
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * Tells whether the last command asked Emma to stop.
+     *
+     * @return true once "bye" has been given.
+     */
+    public boolean isExit() {
+        return isExit;
     }
 
     /**
