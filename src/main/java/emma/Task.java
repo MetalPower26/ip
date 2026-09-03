@@ -52,14 +52,14 @@ public abstract class Task {
      * any the subclass passes in. Commas and indenting are handled here, so
      * subclasses never deal with separators.
      *
-     * @param extraFields field pairs built with {@link Json#field}
+     * @param extraFields field pairs built with {@link Json#buildField}
      * @return this task as an indented JSON object
      */
-    protected String jsonObject(String... extraFields) {
+    protected String buildJsonObject(String... extraFields) {
         List<String> fields = new ArrayList<>();
-        fields.add(Json.field("type", getTypeIcon()));
-        fields.add(Json.field("done", isDone));
-        fields.add(Json.field("description", description));
+        fields.add(Json.buildField("type", getTypeIcon()));
+        fields.add(Json.buildField("done", isDone));
+        fields.add(Json.buildField("description", description));
         fields.addAll(List.of(extraFields));
         return "  {\n    " + String.join(",\n    ", fields) + "\n  }";
     }
@@ -71,7 +71,7 @@ public abstract class Task {
      * @return this task as JSON
      */
     public String toJson() {
-        return jsonObject();
+        return buildJsonObject();
     }
 
     /** Renders the task as "[icon][x] description"; subclasses append their own details. */

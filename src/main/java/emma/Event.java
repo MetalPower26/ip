@@ -41,7 +41,8 @@ public class Event extends Task {
     /** Adds the start and end dates to the fields every task saves. */
     @Override
     public String toJson() {
-        return jsonObject(Json.field("from", from.toString()), Json.field("to", to.toString()));
+        return buildJsonObject(Json.buildField("from", from.toString()),
+                Json.buildField("to", to.toString()));
     }
 
     /** Appends the start and end dates to the standard rendering. */
