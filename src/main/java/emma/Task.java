@@ -41,6 +41,16 @@ public abstract class Task {
     }
 
     /**
+     * Checks whether some text appears in this task's description.
+     *
+     * @param text the text to look for, matched exactly as given
+     * @return true if the description contains that text
+     */
+    public boolean hasDescriptionContaining(String text) {
+        return description.contains(text);
+    }
+
+    /**
      * Returns the type icon shown in the first bracket.
      *
      * @return task type icon

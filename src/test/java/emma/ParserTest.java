@@ -19,6 +19,7 @@ import emma.command.ByeCommand;
 import emma.command.Command;
 import emma.command.DeleteCommand;
 import emma.command.FilterCommand;
+import emma.command.FindCommand;
 import emma.command.ListCommand;
 import emma.command.MarkCommand;
 
@@ -48,6 +49,7 @@ public class ParserTest {
         assertInstanceOf(AddEventCommand.class,
                 Parser.parse("event meeting /from 2019-10-15 /to 2019-10-16"));
         assertInstanceOf(FilterCommand.class, Parser.parse("filter /type todo"));
+        assertInstanceOf(FindCommand.class, Parser.parse("find book"));
     }
 
     @Test
@@ -136,6 +138,8 @@ public class ParserTest {
     public void parse_taskNumberThatIsNotAWholeNumber_isRejected() {
         assertEquals("I need a task number, like \"mark 1\".",
                 assertThrows(EmmaException.class, () -> Parser.parse("mark abc")).getMessage());
+        assertEquals("A find needs something to look for, like \"find book\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("find")).getMessage());
         assertEquals("I need a task number, like \"delete 1\".",
                 assertThrows(EmmaException.class, () -> Parser.parse("delete")).getMessage());
     }

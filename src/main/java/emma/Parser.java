@@ -11,6 +11,7 @@ import emma.command.ByeCommand;
 import emma.command.Command;
 import emma.command.DeleteCommand;
 import emma.command.FilterCommand;
+import emma.command.FindCommand;
 import emma.command.ListCommand;
 import emma.command.MarkCommand;
 
@@ -41,6 +42,7 @@ public class Parser {
         case "deadline" -> parseDeadline(arguments);
         case "event" -> parseEvent(arguments);
         case "filter" -> parseFilter(arguments);
+        case "find" -> parseFind(arguments);
         default -> throw new EmmaException("Sorry, I don't know what that means!");
         };
     }
@@ -58,6 +60,21 @@ public class Parser {
             throw new EmmaException("A todo needs a description, like \"todo read book\".");
         }
         return new AddTodoCommand(description);
+    }
+
+    /**
+     * Reads a "find" command.
+     *
+     * @param arguments the arguments after the command word
+     * @return the command
+     * @throws EmmaException if there is nothing to look for
+     */
+    private static Command parseFind(String arguments) throws EmmaException {
+        String keyword = arguments.trim();
+        if (keyword.isEmpty()) {
+            throw new EmmaException("A find needs something to look for, like \"find book\".");
+        }
+        return new FindCommand(keyword);
     }
 
     /**
