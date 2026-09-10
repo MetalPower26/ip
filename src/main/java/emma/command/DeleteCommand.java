@@ -23,12 +23,14 @@ public class DeleteCommand implements Command {
 
     @Override
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
+        int sizeBefore = tasks.size();
         Task task;
         try {
             task = tasks.delete(taskNumber);
         } catch (IndexOutOfBoundsException e) {
             throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
         }
+        assert tasks.size() == sizeBefore - 1 : "a delete should remove exactly one task";
         try {
             storage.save(tasks);
         } catch (EmmaException e) {

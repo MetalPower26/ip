@@ -71,6 +71,7 @@ public class Emma {
         try {
             Command command = Parser.parse(input);
             String response = command.execute(tasks, storage);
+            assert response != null : "every command must return something for Emma to say";
             isExit = command.isExit();
             return response;
         } catch (EmmaException e) {

@@ -69,4 +69,6 @@ shadowJar {
 
 run {
     standardInput = System.in
+    // Assertions are off unless the JVM is given -ea, which would make them dead code.
+    enableAssertions = true
 }
