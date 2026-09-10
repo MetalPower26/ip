@@ -32,13 +32,16 @@ public class TaskList {
     }
 
     /**
-     * Checks whether a task number refers to an existing task.
+     * Rejects a task number that names no task, so that every method taking one
+     * refuses a bad number in the same way and with the same words.
      *
      * @param taskNumber the 1-based task number.
-     * @return true if a task with that number exists.
+     * @throws IndexOutOfBoundsException if no task has that number
      */
-    private boolean isValidTaskNumber(int taskNumber) {
-        return taskNumber >= 1 && taskNumber <= tasks.size();
+    private void requireValidTaskNumber(int taskNumber) {
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
+            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
+        }
     }
 
     /**
@@ -49,9 +52,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if no task has that number
      */
     public Task get(int taskNumber) {
-        if (!isValidTaskNumber(taskNumber)) {
-            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
-        }
+        requireValidTaskNumber(taskNumber);
         return tasks.get(taskNumber - 1);
     }
 
@@ -100,9 +101,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if no task has that number
      */
     public Task delete(int taskNumber) {
-        if (!isValidTaskNumber(taskNumber)) {
-            throw new IndexOutOfBoundsException("No task numbered " + taskNumber);
-        }
+        requireValidTaskNumber(taskNumber);
         return tasks.remove(taskNumber - 1);
     }
 

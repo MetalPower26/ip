@@ -21,6 +21,10 @@ import emma.command.MarkCommand;
  */
 public class Parser {
 
+    private static final String TYPE_FLAG = "/type ";
+    private static final String DUE_BY_FLAG = "/due-by";
+    private static final String AT_FLAG = "/at";
+
     /**
      * Reads one line of input.
      *
@@ -133,39 +137,67 @@ public class Parser {
      *     belong to that type or is not followed by a real date
      */
     private static Command parseFilter(String arguments) throws EmmaException {
-        String usage = "A filter needs a type, like \"filter /type deadline\".";
         String trimmed = arguments.trim();
-        if (!trimmed.startsWith("/type ")) {
-            throw new EmmaException(usage);
+        if (!trimmed.startsWith(TYPE_FLAG)) {
+            throw new EmmaException("A filter needs a type, like \"filter /type deadline\".");
         }
-        String[] parts = trimmed.substring("/type ".length()).trim().split(" ", 2);
+        String[] parts = trimmed.substring(TYPE_FLAG.length()).trim().split(" ", 2);
         String type = parts[0];
-        Predicate<Task> matches = switch (type) {
+        String option = parts.length > 1 ? parts[1].trim() : "";
+
+        Predicate<Task> matches = parseFilterType(type);
+        if (!option.isEmpty()) {
+            // Reached only once the type is known, so a bad option is reported
+            // against a type Emma recognises rather than masking an unknown one.
+            matches = parseFilterOption(type, option);
+        }
+        return new FilterCommand(matches);
+    }
+
+    /**
+     * Reads the type a filter names, as in "filter /type deadline".
+     *
+     * @param type the word after "/type".
+     * @return the test that keeps only tasks of that type.
+     * @throws EmmaException if the type is not one Emma tracks
+     */
+    private static Predicate<Task> parseFilterType(String type) throws EmmaException {
+        return switch (type) {
             case "todo" -> task -> task instanceof Todo;
             case "deadline" -> task -> task instanceof Deadline;
             case "event" -> task -> task instanceof Event;
             default -> throw new EmmaException("I can only filter by todo, deadline or event.");
         };
+    }
 
-        String option = parts.length > 1 ? parts[1].trim() : "";
-        if (!option.isEmpty()) {
-            String[] optionParts = option.split(" ", 2);
-            String flag = optionParts[0];
-            String date = optionParts.length > 1 ? optionParts[1].trim() : "";
-            if (flag.equals("/due-by") && type.equals("deadline")) {
-                LocalDate dueBy = parseDate(date, "a cutoff date");
-                matches = task -> task instanceof Deadline deadline && deadline.isDueBy(dueBy);
-            } else if (flag.equals("/at") && type.equals("event")) {
-                LocalDate at = parseDate(date, "an event date");
-                matches = task -> task instanceof Event event && event.isOn(at);
-            } else if (flag.equals("/due-by") || flag.equals("/at")) {
-                String owner = flag.equals("/due-by") ? "a deadline" : "an event";
-                throw new EmmaException("Only " + owner + " filter takes \"" + flag + "\".");
-            } else {
-                throw new EmmaException("I don't know what \"" + flag + "\" means in a filter.");
-            }
+    /**
+     * Reads the date option that narrows a filter, as in "/due-by 2019-10-15".
+     *
+     * @param type the type the filter already named, which decides the options allowed.
+     * @param option the rest of the command, starting at the option's flag.
+     * @return the test that keeps only the tasks of that type matching the date.
+     * @throws EmmaException if the flag is unknown, does not belong to that type, or is
+     *     not followed by a real date
+     */
+    private static Predicate<Task> parseFilterOption(String type, String option)
+            throws EmmaException {
+        String[] parts = option.split(" ", 2);
+        String flag = parts[0];
+        String date = parts.length > 1 ? parts[1].trim() : "";
+
+        if (flag.equals(DUE_BY_FLAG) && type.equals("deadline")) {
+            LocalDate dueBy = parseDate(date, "a cutoff date");
+            return task -> task instanceof Deadline deadline && deadline.isDueBy(dueBy);
         }
-        return new FilterCommand(matches);
+        if (flag.equals(AT_FLAG) && type.equals("event")) {
+            LocalDate at = parseDate(date, "an event date");
+            return task -> task instanceof Event event && event.isOn(at);
+        }
+        if (flag.equals(DUE_BY_FLAG) || flag.equals(AT_FLAG)) {
+            String owner = flag.equals(DUE_BY_FLAG) ? "a deadline" : "an event";
+            throw new EmmaException("Only " + owner + " filter takes \"" + flag + "\".");
+        }
+        throw new EmmaException("I don't know what \"" + flag + "\" means in a filter.");
     }
 
     /**
