@@ -10,7 +10,9 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private static final String SAVE_PATH = "data/emma.json";
+    /** The window stays usable when dragged smaller, but not so small the text box vanishes. */
+    private static final double MIN_WIDTH = 320;
+    private static final double MIN_HEIGHT = 400;
 
     /**
      * Opens the window and hands it a chatbot to talk to.
@@ -19,11 +21,11 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) {
-        MainWindow root = new MainWindow(new Emma(SAVE_PATH));
+        MainWindow root = new MainWindow(new Emma(Emma.DEFAULT_SAVE_PATH));
         stage.setScene(new Scene(root, MainWindow.getWindowWidth(), MainWindow.getWindowHeight()));
         stage.setTitle("Emma");
-        stage.setMinWidth(320);
-        stage.setMinHeight(400);
+        stage.setMinWidth(MIN_WIDTH);
+        stage.setMinHeight(MIN_HEIGHT);
         stage.show();
     }
 }

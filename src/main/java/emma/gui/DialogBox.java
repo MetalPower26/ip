@@ -20,6 +20,9 @@ public class DialogBox extends HBox {
 
     private static final double PICTURE_SIZE = 44;
     private static final double SPACING = 10;
+    private static final double MAX_TEXT_WIDTH = 300;
+    private static final Insets TEXT_PADDING = new Insets(8, 12, 8, 12);
+    private static final Insets BOX_PADDING = new Insets(6, 10, 6, 10);
 
     private final Label text;
     private final ImageView displayPicture;
@@ -35,8 +38,8 @@ public class DialogBox extends HBox {
     private DialogBox(String message, Image picture, String style) {
         text = new Label(message);
         text.setWrapText(true);
-        text.setMaxWidth(300);
-        text.setPadding(new Insets(8, 12, 8, 12));
+        text.setMaxWidth(MAX_TEXT_WIDTH);
+        text.setPadding(TEXT_PADDING);
         text.setStyle(style);
 
         displayPicture = new ImageView(picture);
@@ -45,7 +48,7 @@ public class DialogBox extends HBox {
         displayPicture.setClip(new Circle(PICTURE_SIZE / 2, PICTURE_SIZE / 2, PICTURE_SIZE / 2));
 
         this.setSpacing(SPACING);
-        this.setPadding(new Insets(6, 10, 6, 10));
+        this.setPadding(BOX_PADDING);
         this.setAlignment(Pos.TOP_RIGHT);
         this.getChildren().addAll(text, displayPicture);
     }

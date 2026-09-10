@@ -23,12 +23,7 @@ public abstract class AddCommand implements Command {
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
         Task task = createTask();
         tasks.add(task);
-        try {
-            storage.save(tasks);
-        } catch (EmmaException e) {
-            tasks.delete(tasks.size());
-            throw e;
-        }
+        storage.saveOrUndo(tasks, () -> tasks.delete(tasks.size()));
         return "Got it, I've added this:\n  " + task;
     }
 }

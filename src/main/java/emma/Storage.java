@@ -65,20 +65,48 @@ public class Storage {
      * @throws EmmaException if the file cannot be written
      */
     public void save(TaskList tasks) throws EmmaException {
-        List<Task> allTasks = tasks.getTasks();
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < allTasks.size(); i++) {
-            json.append(i > 0 ? ",\n" : "\n").append(allTasks.get(i).toJson());
-        }
-        json.append(allTasks.isEmpty() ? "]\n" : "\n]\n");
         try {
             Path folder = file.getParent();
             if (folder != null) {
                 Files.createDirectories(folder);
             }
-            Files.writeString(file, json.toString());
+            Files.writeString(file, buildJson(tasks));
         } catch (IOException e) {
             throw new EmmaException("I couldn't save to " + file + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Renders the whole list as the JSON array the file holds.
+     *
+     * @param tasks the tasks to render.
+     * @return the array, one indented object per task, ending in a newline.
+     */
+    private static String buildJson(TaskList tasks) {
+        List<String> objects = new ArrayList<>();
+        for (Task task : tasks.getTasks()) {
+            objects.add(task.toJson());
+        }
+        if (objects.isEmpty()) {
+            return "[]\n";
+        }
+        return "[\n" + String.join(",\n", objects) + "\n]\n";
+    }
+
+    /**
+     * Writes the whole task list out, putting the list back the way it was if the
+     * write fails, so that what Emma holds in memory always matches what is on disk.
+     *
+     * @param tasks the tasks to save.
+     * @param undo undoes the change that is being saved.
+     * @throws EmmaException if the file cannot be written, after the change is undone
+     */
+    public void saveOrUndo(TaskList tasks, Runnable undo) throws EmmaException {
+        try {
+            save(tasks);
+        } catch (EmmaException e) {
+            undo.run();
+            throw e;
         }
     }
 

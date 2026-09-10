@@ -8,9 +8,7 @@ import emma.TaskList;
 /**
  * Removes a numbered task from the list.
  */
-public class DeleteCommand implements Command {
-
-    private final int taskNumber;
+public class DeleteCommand extends TaskNumberCommand {
 
     /**
      * Creates the command.
@@ -18,23 +16,18 @@ public class DeleteCommand implements Command {
      * @param taskNumber the 1-based task number the user gave.
      */
     public DeleteCommand(int taskNumber) {
-        this.taskNumber = taskNumber;
+        super(taskNumber);
     }
 
     @Override
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
         Task task;
         try {
-            task = tasks.delete(taskNumber);
+            task = tasks.delete(getTaskNumber());
         } catch (IndexOutOfBoundsException e) {
-            throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
+            throw buildNoSuchTaskError();
         }
-        try {
-            storage.save(tasks);
-        } catch (EmmaException e) {
-            tasks.insert(taskNumber, task);
-            throw e;
-        }
+        storage.saveOrUndo(tasks, () -> tasks.insert(getTaskNumber(), task));
         return "Okay, I've removed this:\n  " + task;
     }
 }
