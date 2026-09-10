@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Saves the task list to disk and reads it back.
@@ -83,14 +84,14 @@ public class Storage {
      * @return the array, one indented object per task, ending in a newline.
      */
     private static String buildJson(TaskList tasks) {
-        List<String> objects = new ArrayList<>();
-        for (Task task : tasks.getTasks()) {
-            objects.add(task.toJson());
-        }
+        String objects = tasks.getTasks().stream()
+                .map(Task::toJson)
+                .collect(Collectors.joining(",\n"));
+        // An empty list is the one shape that is not brackets wrapped around objects.
         if (objects.isEmpty()) {
             return "[]\n";
         }
-        return "[\n" + String.join(",\n", objects) + "\n]\n";
+        return "[\n" + objects + "\n]\n";
     }
 
     /**
