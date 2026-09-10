@@ -22,6 +22,8 @@ public class MainWindow extends AnchorPane {
     private static final double WIDTH = 420;
     private static final double HEIGHT = 620;
     private static final double INPUT_HEIGHT = 40;
+    private static final double SEND_BUTTON_WIDTH = 70;
+    private static final double CONVERSATION_PADDING = 6;
     private static final Duration CLOSE_DELAY = Duration.seconds(1);
 
     private final ScrollPane scrollPane = new ScrollPane();
@@ -59,7 +61,7 @@ public class MainWindow extends AnchorPane {
         this.setStyle("-fx-background-color: white;");
 
         dialogContainer.setFillWidth(true);
-        dialogContainer.setPadding(new Insets(6));
+        dialogContainer.setPadding(new Insets(CONVERSATION_PADDING));
         scrollPane.setContent(dialogContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -69,7 +71,7 @@ public class MainWindow extends AnchorPane {
 
         userInput.setPromptText("Type a command, then press Enter");
         userInput.setPrefHeight(INPUT_HEIGHT);
-        sendButton.setPrefSize(70, INPUT_HEIGHT);
+        sendButton.setPrefSize(SEND_BUTTON_WIDTH, INPUT_HEIGHT);
 
         AnchorPane.setTopAnchor(scrollPane, 0.0);
         AnchorPane.setLeftAnchor(scrollPane, 0.0);
@@ -78,7 +80,7 @@ public class MainWindow extends AnchorPane {
 
         AnchorPane.setBottomAnchor(userInput, 0.0);
         AnchorPane.setLeftAnchor(userInput, 0.0);
-        AnchorPane.setRightAnchor(userInput, sendButton.getPrefWidth());
+        AnchorPane.setRightAnchor(userInput, SEND_BUTTON_WIDTH);
 
         AnchorPane.setBottomAnchor(sendButton, 0.0);
         AnchorPane.setRightAnchor(sendButton, 0.0);

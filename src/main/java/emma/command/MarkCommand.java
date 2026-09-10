@@ -8,9 +8,8 @@ import emma.TaskList;
 /**
  * Marks a numbered task as done or as not done yet.
  */
-public class MarkCommand implements Command {
+public class MarkCommand extends TaskNumberCommand {
 
-    private final int taskNumber;
     private final boolean isDone;
 
     /**
@@ -20,7 +19,7 @@ public class MarkCommand implements Command {
      * @param isDone true for "mark", false for "unmark".
      */
     public MarkCommand(int taskNumber, boolean isDone) {
-        this.taskNumber = taskNumber;
+        super(taskNumber);
         this.isDone = isDone;
     }
 
@@ -29,18 +28,14 @@ public class MarkCommand implements Command {
         Task task;
         boolean wasDone;
         try {
-            task = tasks.get(taskNumber);
+            task = tasks.get(getTaskNumber());
             wasDone = task.isDone();
-            tasks.applyMark(taskNumber, isDone);
+            tasks.applyMark(getTaskNumber(), isDone);
+            assert task.isDone() == isDone : "marking should have left the task as asked";
         } catch (IndexOutOfBoundsException e) {
-            throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
+            throw buildNoSuchTaskError();
         }
-        try {
-            storage.save(tasks);
-        } catch (EmmaException e) {
-            task.setDone(wasDone);
-            throw e;
-        }
+        storage.saveOrUndo(tasks, () -> task.setDone(wasDone));
         String message = isDone
                 ? "Nice! I've marked this as done:"
                 : "Okay, I've marked this as not done yet:";

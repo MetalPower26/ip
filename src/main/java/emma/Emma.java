@@ -9,7 +9,8 @@ import emma.command.Command;
  */
 public class Emma {
 
-    private static final String DEFAULT_SAVE_PATH = "data/emma.json";
+    /** Where the tasks are kept when no other file is asked for. */
+    public static final String DEFAULT_SAVE_PATH = "data/emma.json";
 
     private final Ui ui;
     private final Storage storage;
@@ -71,6 +72,7 @@ public class Emma {
         try {
             Command command = Parser.parse(input);
             String response = command.execute(tasks, storage);
+            assert response != null : "every command must return something for Emma to say";
             isExit = command.isExit();
             return response;
         } catch (EmmaException e) {
