@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Saves the task list to disk and reads it back.
@@ -65,18 +66,17 @@ public class Storage {
      * @throws EmmaException if the file cannot be written
      */
     public void save(TaskList tasks) throws EmmaException {
-        List<Task> allTasks = tasks.getTasks();
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < allTasks.size(); i++) {
-            json.append(i > 0 ? ",\n" : "\n").append(allTasks.get(i).toJson());
-        }
-        json.append(allTasks.isEmpty() ? "]\n" : "\n]\n");
+        String objects = tasks.getTasks().stream()
+                .map(Task::toJson)
+                .collect(Collectors.joining(",\n"));
+        // An empty list is the one shape that is not brackets wrapped around objects.
+        String json = objects.isEmpty() ? "[]\n" : "[\n" + objects + "\n]\n";
         try {
             Path folder = file.getParent();
             if (folder != null) {
                 Files.createDirectories(folder);
             }
-            Files.writeString(file, json.toString());
+            Files.writeString(file, json);
         } catch (IOException e) {
             throw new EmmaException("I couldn't save to " + file + ": " + e.getMessage());
         }
