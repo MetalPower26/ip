@@ -27,6 +27,7 @@ public class TaskList {
      * @param task the task to store.
      */
     public void add(Task task) {
+        assert task != null : "the task list should never be asked to hold a null task";
         tasks.add(task);
     }
 

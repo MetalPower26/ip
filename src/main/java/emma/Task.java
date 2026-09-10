@@ -66,6 +66,8 @@ public abstract class Task {
      * @return this task as an indented JSON object.
      */
     protected String buildJsonObject(String... extraFields) {
+        assert getTypeIcon().length() == 1
+                : "a task type icon must be a single letter, but was: " + getTypeIcon();
         List<String> fields = new ArrayList<>();
         fields.add(Json.buildField("type", getTypeIcon()));
         fields.add(Json.buildField("done", isDone));

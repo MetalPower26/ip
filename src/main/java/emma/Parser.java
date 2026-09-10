@@ -95,6 +95,7 @@ public class Parser {
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
             throw new EmmaException(usage);
         }
+        assert parts.length == 2 : "the check above should have rejected a missing /by";
         LocalDate by = parseDate(parts[1].trim(), "a due date");
         return new AddDeadlineCommand(parts[0].trim(), by);
     }

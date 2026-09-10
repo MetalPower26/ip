@@ -31,6 +31,7 @@ public class MarkCommand extends TaskNumberCommand {
             task = tasks.get(getTaskNumber());
             wasDone = task.isDone();
             tasks.applyMark(getTaskNumber(), isDone);
+            assert task.isDone() == isDone : "marking should have left the task as asked";
         } catch (IndexOutOfBoundsException e) {
             throw buildNoSuchTaskError();
         }

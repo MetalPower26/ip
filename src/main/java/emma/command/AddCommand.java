@@ -22,6 +22,7 @@ public abstract class AddCommand implements Command {
     @Override
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
         Task task = createTask();
+        assert task != null : "createTask() must build a task for " + getClass().getSimpleName();
         tasks.add(task);
         storage.saveOrUndo(tasks, () -> tasks.delete(tasks.size()));
         return "Got it, I've added this:\n  " + task;
