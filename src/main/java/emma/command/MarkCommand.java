@@ -32,6 +32,7 @@ public class MarkCommand implements Command {
             task = tasks.get(taskNumber);
             wasDone = task.isDone();
             tasks.applyMark(taskNumber, isDone);
+            assert task.isDone() == isDone : "marking should have left the task as asked";
         } catch (IndexOutOfBoundsException e) {
             throw new EmmaException("You don't have a task numbered " + taskNumber + ".");
         }
