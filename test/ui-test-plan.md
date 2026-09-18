@@ -605,3 +605,60 @@ Nothing has "homework" in its description.
 A find needs something to look for, like "find book".
 Bye for now! Hope to see you again soon.
 ```
+
+---
+
+## TC19: Adding a task that is already tracked
+
+**Aim:** Emma refuses a task the list already holds, whatever its type and whether
+or not it is done, but still accepts one that differs in type or in any of its
+dates. A refused task is never added, so the numbering stays unbroken.
+
+**Input**
+
+```
+todo read book
+todo read book
+mark 1
+todo read book
+deadline read book /by 2019-10-15
+deadline read book /by 2019-10-15
+deadline read book /by 2019-10-16
+event meeting /from 2019-10-15 /to 2019-10-16
+event meeting /from 2019-10-15 /to 2019-10-17
+event meeting /from 2019-10-15 /to 2019-10-16
+list
+bye
+```
+
+**Expected output**
+
+```
+Got it, I've added this:
+  [T][ ] read book
+You're already tracking this:
+  [T][ ] read book
+Nice! I've marked this as done:
+  [T][x] read book
+You're already tracking this:
+  [T][ ] read book
+Got it, I've added this:
+  [D][ ] read book (by: Oct 15 2019)
+You're already tracking this:
+  [D][ ] read book (by: Oct 15 2019)
+Got it, I've added this:
+  [D][ ] read book (by: Oct 16 2019)
+Got it, I've added this:
+  [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
+Got it, I've added this:
+  [E][ ] meeting (from: Oct 15 2019 to: Oct 17 2019)
+You're already tracking this:
+  [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
+Here's your tasks:
+1. [T][x] read book
+2. [D][ ] read book (by: Oct 15 2019)
+3. [D][ ] read book (by: Oct 16 2019)
+4. [E][ ] meeting (from: Oct 15 2019 to: Oct 16 2019)
+5. [E][ ] meeting (from: Oct 15 2019 to: Oct 17 2019)
+Bye for now! Hope to see you again soon.
+```

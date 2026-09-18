@@ -51,6 +51,19 @@ public abstract class Task {
     }
 
     /**
+     * Checks whether this task and another stand for the same thing, so that the
+     * same task is not tracked twice. Tasks match when they are of the same type
+     * and have the same description; subclasses with dates of their own also
+     * compare those. Whether a task is done is deliberately ignored.
+     *
+     * @param other the task to compare against.
+     * @return true if the two tasks are duplicates of each other.
+     */
+    public boolean isDuplicateOf(Task other) {
+        return getClass() == other.getClass() && description.equals(other.description);
+    }
+
+    /**
      * Returns the type icon shown in the first bracket.
      *
      * @return task type icon.

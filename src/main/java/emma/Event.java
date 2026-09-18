@@ -38,6 +38,15 @@ public class Event extends Task {
         return !from.isAfter(date) && !to.isBefore(date);
     }
 
+    /** Two events match only if they also run between the same two dates. */
+    @Override
+    public boolean isDuplicateOf(Task other) {
+        Event otherEvent = (Event) other;
+        return super.isDuplicateOf(other)
+                && from.equals(otherEvent.from)
+                && to.equals(otherEvent.to);
+    }
+
     /** Adds the start and end dates to the fields every task saves. */
     @Override
     public String toJson() {

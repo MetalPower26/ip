@@ -35,6 +35,12 @@ public class Deadline extends Task {
         return !by.isAfter(date);
     }
 
+    /** Two deadlines match only if they are also due on the same date. */
+    @Override
+    public boolean isDuplicateOf(Task other) {
+        return super.isDuplicateOf(other) && by.equals(((Deadline) other).by);
+    }
+
     /** Adds the due date to the fields every task saves. */
     @Override
     public String toJson() {

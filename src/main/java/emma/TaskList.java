@@ -32,6 +32,22 @@ public class TaskList {
     }
 
     /**
+     * Checks whether the list already holds a task matching the given one, by
+     * walking the list and comparing each task in turn.
+     *
+     * @param task the task to look for.
+     * @return true if a duplicate of it is already stored.
+     */
+    public boolean contains(Task task) {
+        for (Task stored : tasks) {
+            if (stored.isDuplicateOf(task)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Rejects a task number that names no task, so that every method taking one
      * refuses a bad number in the same way and with the same words.
      *
