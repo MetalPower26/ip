@@ -16,6 +16,7 @@ public class Emma {
     private final Storage storage;
     private TaskList tasks;
     private boolean isExit = false;
+    private boolean isError = false;
 
     /**
      * Creates a chatbot that keeps its tasks in the given file.
@@ -74,10 +75,22 @@ public class Emma {
             String response = command.execute(tasks, storage);
             assert response != null : "every command must return something for Emma to say";
             isExit = command.isExit();
+            isError = false;
             return response;
         } catch (EmmaException e) {
+            isError = true;
             return e.getMessage();
         }
+    }
+
+    /**
+     * Tells whether the last response was a complaint rather than a reply Emma carried out,
+     * so that a front end can set it apart from the rest of the conversation.
+     *
+     * @return true if the last command could not be carried out.
+     */
+    public boolean isError() {
+        return isError;
     }
 
     /**
