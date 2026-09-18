@@ -50,9 +50,10 @@ public class MainWindow extends AnchorPane {
 
         String loadMessage = emma.loadTasks();
         if (!loadMessage.isEmpty()) {
-            addEmmaMessage(loadMessage);
+            // A non-empty load message means the saved tasks could not be read.
+            addEmmaMessage(loadMessage, true);
         }
-        addEmmaMessage(Ui.getGreeting());
+        addEmmaMessage(Ui.getGreeting(), false);
     }
 
     /** Arranges the scrolling conversation above the text box and the send button. */
@@ -101,7 +102,8 @@ public class MainWindow extends AnchorPane {
             return;
         }
         dialogContainer.getChildren().add(DialogBox.getUserDialog(input, userImage));
-        addEmmaMessage(emma.getResponse(input));
+        String response = emma.getResponse(input);
+        addEmmaMessage(response, emma.isError());
         userInput.clear();
 
         if (emma.isExit()) {
@@ -114,12 +116,15 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Adds one of Emma's messages to the conversation.
+     * Adds one of Emma's messages to the conversation, picking the bubble that suits it.
      *
      * @param message what Emma has to say.
+     * @param isError true if Emma is complaining rather than reporting something done.
      */
-    private void addEmmaMessage(String message) {
-        dialogContainer.getChildren().add(DialogBox.getEmmaDialog(message, emmaImage));
+    private void addEmmaMessage(String message, boolean isError) {
+        dialogContainer.getChildren().add(isError
+                ? DialogBox.getEmmaErrorDialog(message, emmaImage)
+                : DialogBox.getEmmaDialog(message, emmaImage));
     }
 
     /**

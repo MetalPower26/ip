@@ -24,6 +24,24 @@ public class DialogBox extends HBox {
     private static final Insets TEXT_PADDING = new Insets(8, 12, 8, 12);
     private static final Insets BOX_PADDING = new Insets(6, 10, 6, 10);
 
+    /** An orange bubble for the user's own lines. */
+    private static final String USER_STYLE =
+            "-fx-background-color: #ea580c; -fx-text-fill: white; -fx-background-radius: 12;";
+    /** A quiet grey bubble for a reply Emma carried out. */
+    private static final String EMMA_STYLE =
+            "-fx-background-color: #e5e7eb; -fx-text-fill: #111827; -fx-background-radius: 12;";
+    /**
+     * A red bubble, outlined and in bold, for a command Emma refused. It differs from an
+     * ordinary reply in colour, border and weight at once, so the odd one out is easy to
+     * pick out when scrolling back through the conversation.
+     */
+    private static final String ERROR_STYLE =
+            "-fx-background-color: #fee2e2; -fx-text-fill: #991b1b; -fx-background-radius: 12;"
+            + " -fx-border-color: #dc2626; -fx-border-radius: 12; -fx-border-width: 2;"
+            + " -fx-font-weight: bold;";
+    /** Marks an error in the text too, for anyone who cannot tell the colours apart. */
+    private static final String ERROR_PREFIX = "⚠ ";
+
     private final Label text;
     private final ImageView displayPicture;
 
@@ -69,8 +87,7 @@ public class DialogBox extends HBox {
      * @return the dialog box.
      */
     public static DialogBox getUserDialog(String message, Image picture) {
-        return new DialogBox(message, picture,
-                "-fx-background-color: #ea580c; -fx-text-fill: white; -fx-background-radius: 12;");
+        return new DialogBox(message, picture, USER_STYLE);
     }
 
     /**
@@ -81,8 +98,21 @@ public class DialogBox extends HBox {
      * @return the dialog box, already turned around.
      */
     public static DialogBox getEmmaDialog(String message, Image picture) {
-        DialogBox box = new DialogBox(message, picture,
-                "-fx-background-color: #e5e7eb; -fx-text-fill: #111827; -fx-background-radius: 12;");
+        DialogBox box = new DialogBox(message, picture, EMMA_STYLE);
+        box.flip();
+        return box;
+    }
+
+    /**
+     * Creates the box for a command Emma could not carry out, shown on the left like any
+     * other reply but styled to stand out.
+     *
+     * @param message what Emma said about the problem.
+     * @param picture Emma's picture.
+     * @return the dialog box, already turned around.
+     */
+    public static DialogBox getEmmaErrorDialog(String message, Image picture) {
+        DialogBox box = new DialogBox(ERROR_PREFIX + message, picture, ERROR_STYLE);
         box.flip();
         return box;
     }
