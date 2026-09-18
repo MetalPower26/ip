@@ -23,6 +23,9 @@ public abstract class AddCommand implements Command {
     public String execute(TaskList tasks, Storage storage) throws EmmaException {
         Task task = createTask();
         assert task != null : "createTask() must build a task for " + getClass().getSimpleName();
+        if (tasks.contains(task)) {
+            throw new EmmaException("You're already tracking this:\n  " + task);
+        }
         tasks.add(task);
         storage.saveOrUndo(tasks, () -> tasks.delete(tasks.size()));
         return "Got it, I've added this:\n  " + task;
