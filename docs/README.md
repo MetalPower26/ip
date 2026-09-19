@@ -20,56 +20,42 @@ Type a command in the box at the bottom and press <kbd>Enter</kbd>, or click
 
 ## Adding tasks: `todo`, `deadline`, `event`
 
-Emma tracks three kinds of task.
+Emma tracks three kinds of task. Each one goes to the end of your list and starts
+off not done, and Emma repeats back what she understood so you can check the dates
+came out the way you meant.
 
-**Something to do, with no particular date:**
+**`todo` — something to do, with no particular date**
 
 ```
 todo buy milk
 ```
 
-```
-Got it, I've added this:
-  [T][ ] buy milk
-```
-
-**Something due by a date:**
+**`deadline` — something due by a date**
 
 ```
 deadline submit report /by 2026-09-25
 ```
 
-```
-Got it, I've added this:
-  [D][ ] submit report (by: Sep 25 2026)
-```
-
-**Something running over a stretch of days:**
+**`event` — something running over a stretch of days**
 
 ```
 event team offsite /from 2026-10-02 /to 2026-10-03
-```
-
-```
-Got it, I've added this:
-  [E][ ] team offsite (from: Oct 02 2026 to: Oct 03 2026)
 ```
 
 > **Note:** Type dates as **`yyyy-mm-dd`**. Emma reads them back to you in words.
 
 ## Seeing what you have: `list`
 
-`list` shows everything, numbered:
-
 ```
-Here's your tasks:
-1. [T][x] buy milk
-2. [D][ ] submit report (by: Sep 25 2026)
-3. [E][ ] team offsite (from: Oct 02 2026 to: Oct 03 2026)
+list
 ```
 
-Each line reads `[kind][status] description`. The kind is `T`, `D` or `E` for the
-three sorts of task, and the status is `x` once it's done.
+Shows every task you have, numbered from 1. Those are the numbers `mark`,
+`unmark` and `delete` expect, so this is usually the command you reach for first.
+
+Each task starts with two brackets: the kind — `T` for a todo, `D` for a
+deadline, `E` for an event — and the status, which shows `x` once the task is
+done. Deadlines and events show their dates after the description.
 
 ## Ticking things off: `mark`, `unmark`, `delete`
 
