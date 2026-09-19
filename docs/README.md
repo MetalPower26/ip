@@ -15,11 +15,10 @@ plate, and she remembers it, including after you close her.
 Type a command in the box at the bottom and press <kbd>Enter</kbd>, or click
 **Send**.
 
-> [!TIP]
-> Emma saves after every change, so you can close her whenever you like without
-> losing anything.
+> **Tip:** Emma saves after every change, so you can close her whenever you like
+> without losing anything.
 
-## Adding tasks
+## Adding tasks: `todo`, `deadline`, `event`
 
 Emma tracks three kinds of task.
 
@@ -56,10 +55,9 @@ Got it, I've added this:
   [E][ ] team offsite (from: Oct 02 2026 to: Oct 03 2026)
 ```
 
-> [!NOTE]
-> Type dates as **`yyyy-mm-dd`**. Emma reads them back to you in words.
+> **Note:** Type dates as **`yyyy-mm-dd`**. Emma reads them back to you in words.
 
-## Seeing what you have
+## Seeing what you have: `list`
 
 `list` shows everything, numbered:
 
@@ -73,7 +71,7 @@ Here's your tasks:
 Each line reads `[kind][status] description`. The kind is `T`, `D` or `E` for the
 three sorts of task, and the status is `x` once it's done.
 
-## Ticking things off
+## Ticking things off: `mark`, `unmark`, `delete`
 
 Use the number shown by `list`:
 
@@ -83,7 +81,7 @@ Use the number shown by `list`:
 | `unmark 2` | Task 2 goes back to not done |
 | `delete 2` | Task 2 is removed for good |
 
-## Finding a task
+## Finding a task: `find`, `filter`
 
 When the list gets long:
 
@@ -97,7 +95,7 @@ When the list gets long:
 `find` matches part of a word, and it cares about capital letters — `find Report`
 won't match "report".
 
-## Finishing up
+## Finishing up: `bye`
 
 `bye` closes the window. Everything is already saved.
 
