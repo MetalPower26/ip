@@ -185,6 +185,48 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_textAfterACommandTakingNothing_isRejected() {
+        assertEquals("\"list\" takes nothing after it, but I got \"mamama\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("list mamama")).getMessage());
+        assertEquals("\"bye\" takes nothing after it, but I got \"now\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("bye now")).getMessage());
+    }
+
+    @Test
+    public void parse_commandTakingNothingWithOnlySpacesAfterIt_isStillAccepted() throws EmmaException {
+        assertInstanceOf(ListCommand.class, Parser.parse("list   "));
+        assertInstanceOf(ListCommand.class, Parser.parse("  list  "));
+        assertInstanceOf(ByeCommand.class, Parser.parse("bye  "));
+    }
+
+    @Test
+    public void parse_textAfterACommandTakingAnArgument_isAlreadyRejectedByThatArgument() {
+        // These read a number, a date or a flag, so trailing words fail that reading
+        // rather than needing a check of their own.
+        assertEquals("I need a task number, like \"mark 1\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("mark 1 blah")).getMessage());
+        assertEquals("I need a task number, like \"delete 1\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("delete 1 blah")).getMessage());
+        assertEquals("I don't know what \"blah\" means in a filter.",
+                assertThrows(EmmaException.class, () ->
+                        Parser.parse("filter /type todo blah")).getMessage());
+        assertEquals("I need a due date as a date like 2019-10-15, "
+                        + "but I got \"2019-10-15 blah\".",
+                assertThrows(EmmaException.class, () ->
+                        Parser.parse("deadline x /by 2019-10-15 blah")).getMessage());
+    }
+
+    @Test
+    public void parse_textAfterTodoOrFind_isPartOfWhatWasAskedFor() throws EmmaException {
+        // Unlike the others, these take free text, so extra words are not a mistake.
+        TaskList tasks = new TaskList(List.of());
+        assertEquals("Got it, I've added this:\n  [T][ ] read book twice",
+                run("todo read book twice", tasks));
+        assertEquals("Here's what I found:\n1. [T][ ] read book twice",
+                run("find read book", tasks));
+    }
+
+    @Test
     public void parse_extraSpacesAroundArguments_areIgnored() throws EmmaException {
         TaskList tasks = new TaskList(List.of());
         assertEquals("Got it, I've added this:\n  [T][ ] read book",

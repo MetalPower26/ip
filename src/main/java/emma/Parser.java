@@ -37,8 +37,8 @@ public class Parser {
         String command = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
         return switch (command) {
-            case "bye" -> new ByeCommand();
-            case "list" -> new ListCommand();
+            case "bye" -> parseBye(arguments);
+            case "list" -> parseList(arguments);
             case "mark" -> new MarkCommand(parseTaskNumber(arguments, "mark"), true);
             case "unmark" -> new MarkCommand(parseTaskNumber(arguments, "unmark"), false);
             case "delete" -> new DeleteCommand(parseTaskNumber(arguments, "delete"));
@@ -49,6 +49,51 @@ public class Parser {
             case "find" -> parseFind(arguments);
             default -> throw new EmmaException("Sorry, I don't know what that means!");
         };
+    }
+
+    /**
+     * Reads a "bye" command.
+     *
+     * @param arguments the arguments after the command word.
+     * @return the command.
+     * @throws EmmaException if anything was typed after the command word
+     */
+    private static Command parseBye(String arguments) throws EmmaException {
+        requireNoArguments("bye", arguments);
+        return new ByeCommand();
+    }
+
+    /**
+     * Reads a "list" command.
+     *
+     * @param arguments the arguments after the command word.
+     * @return the command.
+     * @throws EmmaException if anything was typed after the command word
+     */
+    private static Command parseList(String arguments) throws EmmaException {
+        requireNoArguments("list", arguments);
+        return new ListCommand();
+    }
+
+    /**
+     * Rejects anything typed after a command that takes nothing.
+     *
+     * <p>Commands that read an argument reject trailing text on their own, since the
+     * text has to be a number, a date or a flag. The commands that read nothing would
+     * otherwise carry on regardless, so that a mistyped line was silently obeyed as
+     * though the extra words had never been typed.
+     *
+     * @param command the command word, used to word the error message.
+     * @param arguments whatever followed it.
+     * @throws EmmaException if anything other than whitespace followed the command word
+     */
+    private static void requireNoArguments(String command, String arguments)
+            throws EmmaException {
+        String extra = arguments.trim();
+        if (!extra.isEmpty()) {
+            throw new EmmaException("\"" + command + "\" takes nothing after it, "
+                    + "but I got \"" + extra + "\".");
+        }
     }
 
     /**
