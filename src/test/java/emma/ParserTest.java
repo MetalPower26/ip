@@ -144,6 +144,47 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_addCommandMissingItsDescription_explainsTheUsage() {
+        assertEquals("A deadline needs a description and a date, "
+                        + "like \"deadline return book /by 2019-10-15\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("deadline /by 2019-10-15"))
+                        .getMessage());
+        assertEquals("An event needs a description, a start date and an end date, "
+                        + "like \"event project meeting /from 2019-10-15 /to 2019-10-16\".",
+                assertThrows(EmmaException.class, () ->
+                        Parser.parse("event /from 2019-10-15 /to 2019-10-16")).getMessage());
+    }
+
+    @Test
+    public void parse_addCommandWithAnEmptyDatePart_explainsTheUsage() {
+        assertThrows(EmmaException.class, () -> Parser.parse("deadline return book /by "));
+        assertThrows(EmmaException.class, () -> Parser.parse("event meeting /from  /to 2019-10-16"));
+        assertThrows(EmmaException.class, () -> Parser.parse("event meeting /from 2019-10-15 /to "));
+    }
+
+    @Test
+    public void parse_addCommandWithNoArgumentsAtAll_explainsTheUsage() {
+        assertThrows(EmmaException.class, () -> Parser.parse("deadline"));
+        assertThrows(EmmaException.class, () -> Parser.parse("event"));
+    }
+
+    @Test
+    public void parse_unmarkWithoutAWholeNumber_isRejected() {
+        assertEquals("I need a task number, like \"unmark 1\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("unmark abc")).getMessage());
+        assertEquals("I need a task number, like \"mark 1\".",
+                assertThrows(EmmaException.class, () -> Parser.parse("mark 1.5")).getMessage());
+    }
+
+    @Test
+    public void parse_negativeOrZeroTaskNumber_isAcceptedHereAndRefusedLater() throws EmmaException {
+        // The parser only checks the number is whole; whether a task has it is the
+        // command's business, since only the command can see the list.
+        assertInstanceOf(MarkCommand.class, Parser.parse("mark 0"));
+        assertInstanceOf(DeleteCommand.class, Parser.parse("delete -1"));
+    }
+
+    @Test
     public void parse_extraSpacesAroundArguments_areIgnored() throws EmmaException {
         TaskList tasks = new TaskList(List.of());
         assertEquals("Got it, I've added this:\n  [T][ ] read book",

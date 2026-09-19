@@ -38,13 +38,20 @@ public class Event extends Task {
         return !from.isAfter(date) && !to.isBefore(date);
     }
 
-    /** Two events match only if they also run between the same two dates. */
+    /**
+     * Two events match only if they also run between the same two dates.
+     *
+     * <p>The check that both are events has to come first: it is what makes the cast
+     * below safe, and this is asked about every task in the list, most of which are
+     * not events.
+     */
     @Override
     public boolean isDuplicateOf(Task other) {
+        if (!super.isDuplicateOf(other)) {
+            return false;
+        }
         Event otherEvent = (Event) other;
-        return super.isDuplicateOf(other)
-                && from.equals(otherEvent.from)
-                && to.equals(otherEvent.to);
+        return from.equals(otherEvent.from) && to.equals(otherEvent.to);
     }
 
     /** Adds the start and end dates to the fields every task saves. */
