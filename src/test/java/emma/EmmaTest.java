@@ -15,6 +15,9 @@ import org.junit.jupiter.api.io.TempDir;
  * Checks the chatbot as a whole: one line of input in, one reply out, with the tasks
  * ending up on disk. This is the layer both the console and the window sit on, so it is
  * tested without either of them.
+ *
+ * <p>That includes whether Emma marks a reply as a complaint, which is how the window
+ * knows to show it in its own colours.
  */
 public class EmmaTest {
 
@@ -130,6 +133,50 @@ public class EmmaTest {
         assertFalse(emma.isExit());
         emma.getResponse("list");
         assertFalse(emma.isExit());
+    }
+
+    @Test
+    public void isError_beforeAnyCommand_isFalse() {
+        assertFalse(emma().isError());
+    }
+
+    @Test
+    public void getResponse_unrecognisedCommand_isFlaggedAsAnError() {
+        Emma emma = emma();
+        assertEquals("Sorry, I don't know what that means!", emma.getResponse("blah"));
+        assertTrue(emma.isError());
+    }
+
+    @Test
+    public void getResponse_commandThatWasCarriedOut_isNotFlagged() {
+        Emma emma = emma();
+        emma.getResponse("todo read book");
+        assertFalse(emma.isError());
+    }
+
+    @Test
+    public void getResponse_validCommandAfterAnError_clearsTheFlag() {
+        Emma emma = emma();
+        emma.getResponse("blah");
+        assertTrue(emma.isError());
+        emma.getResponse("list");
+        assertFalse(emma.isError());
+    }
+
+    @Test
+    public void getResponse_refusedDuplicate_isFlaggedAsAnError() {
+        Emma emma = emma();
+        emma.getResponse("todo read book");
+        emma.getResponse("todo read book");
+        assertTrue(emma.isError());
+    }
+
+    @Test
+    public void getResponse_bye_endsWithoutBeingAnError() {
+        Emma emma = emma();
+        emma.getResponse("bye");
+        assertTrue(emma.isExit());
+        assertFalse(emma.isError());
     }
 
     @Test
