@@ -6,6 +6,10 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
+// One place to change the JavaFX version: the javafx block and the per-platform
+// native libraries in the dependencies block must always agree.
+ext.javafxVersion = '25'
+
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
@@ -22,10 +26,25 @@ dependencies {
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
+
+    // JavaFX ships its native libraries in a separate artifact per platform, and the
+    // javafx plugin below only fetches the one this machine needs. Asking for the
+    // others as well is what makes the shadow JAR run on someone else's computer
+    // instead of only on the one that built it.
+    //
+    // Only one architecture per operating system can be carried: the Intel and ARM
+    // builds name their libraries identically (libglass.dylib and so on), so the
+    // first one listed is the one that ends up in the JAR and the other is dropped.
+    // macOS is therefore built for Apple Silicon, which is every Mac since 2020.
+    ['win', 'mac-aarch64', 'linux'].each { platform ->
+        implementation "org.openjfx:javafx-base:${javafxVersion}:${platform}"
+        implementation "org.openjfx:javafx-graphics:${javafxVersion}:${platform}"
+        implementation "org.openjfx:javafx-controls:${javafxVersion}:${platform}"
+    }
 }
 
 javafx {
-    version = '25'
+    version = javafxVersion
     modules = ['javafx.controls']
 }
 
