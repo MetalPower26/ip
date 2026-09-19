@@ -4,7 +4,7 @@ Emma is a friendly chatbot that keeps track of your tasks — things to do, thin
 due by a date, and things happening over a few days. Tell her what's on your
 plate, and she remembers it, including after you close her.
 
-![Emma keeping track of a few tasks](Ui.png)
+<img src="Ui.png" alt="Emma keeping track of a few tasks" width="400">
 
 ## Getting started
 
